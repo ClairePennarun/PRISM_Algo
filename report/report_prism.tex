@@ -1,15 +1,10 @@
 \documentclass[12pt]{report}
-%\usepackage[english]{babel}
+\usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{amsmath}
-\usepackage[section]{placeins}
-\addtolength{\hoffset}{-1cm}
-\addtolength{\textwidth}{2cm} 
-\addtolength{\voffset}{-1cm}
-\addtolength{\textheight}{2cm} 
-
 
 \begin{document}
 
@@ -40,17 +35,73 @@
 \tableofcontents
 \newpage
 
-\chapter{Subject presentation}
+\chapter{Subject presentation and state of the art}
 
-This work is based on \cite{GH08}
+%Partie "domaine general : graph drawing"
+A graph is a data structure encoding information with the use of nodes and edges (which are binary relations between nodes).
 
-\chapter{State of the art and bibliography}
+Graph drawing aims to represent given information as a graph, generally through a "node-link" layout, letting nodes and edges be displayed. 
 
-\chapter{Description of the PRISM algorithm}
+\bigskip
+%Partie "domaine specifique : node overlap + etat de l'art"
+Most of the layout algorithms consider nodes as points, but some need to let appear additional information as labels. For example, London subway maps would be useless without the indication of the stations on the lines.
+
+This could lead to an overlap of some nodes. That must be avoided, as it clearly confuses the understanding of the graph.
+
+Many approachs are generally considered ; the easiest to apply is to "scale" the layout until no overlaps occur. This method has the advantage to preserve the global shape of the layout, but the area of the graph can become very inconvenient. That is why a compromise between the preservation of the shape of the graph and a minimization of the total area has to be found.
+
+Different algorithms have been devised to answer the problem. 
+
+\bigskip
+%Partie : "presentation du projet"
+Our project consists in understanding the algorithm PRISM proposed by Gansner and Hu in \cite{GH08} and in analyzing the feasability of its implementation as a plugin for the Tulip software. %(ici, mettre une reference pour Tulip !)
+
+\chapter{PRISM algorithm}
+
+\section{Description of the algorithm}
+
+The PRISM algorithm focuses on two main constraints for the final layout of the graph. First, the area taken by the layout must be minimal. The second constraint is to preserve the global "shape" of the original layout by maintaining all proximity relations between the nodes.
+
+
+
+\bigskip
+\begin{algorithm}[H]
+\caption{PRISM}
+\KwIn{$p_i^0$ : coordinates of each vertex  \\
+	 width $w_i$ and height $h_i$ of each vertex ($i = 1,2,...,|V|$)}
+	 
+\Repeat{}{$G_{DT}$ : proximity graph of $G$ by Delaunay triangulation \\
+	\For{all edges of $G_{DT}$}
+	{Compute the overlap factor}
+	$\{p_i\}$ : solution of the proximity stress model
+	
+	$p_i^0 = p_i$
+}	
+(no more overlaps along edges of $G_{DT}$)
+\BlankLine
+\Repeat{}{$G_{DT}$ : proximity graph of $G$ by Delaunay triangulation \\
+	Find overlaps in $G$ through a scan-line algorithm \\
+	Add the overlapping edges to $G_{DT}$ \\
+	\For{all edges of $G_{DT}$}
+	{Compute the overlap factor}
+	$\{p_i\}$ : solution of the proximity stress model
+	
+	$p_i^0 = p_i$
+}	
+(no more overlaps found by the scan-line algorithm)
+\end{algorithm}
+
+\section{Complexity}
 
 \chapter{Implementation within Tulip}
 
+\section{Tulip node structure}
+\section{Resolution of the stress model}
+\section{Scan-line algorithm}
+
 \chapter{Tests and results}
+
+\section{Use of GraphViz}
 
 \chapter{Conclusion}
 
