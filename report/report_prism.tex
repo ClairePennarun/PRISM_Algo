@@ -62,7 +62,22 @@ Our project consists in understanding the algorithm PRISM proposed by Gansner an
 
 The PRISM algorithm focuses on two main constraints for the final layout of the graph. First, the area taken by the layout must be minimal. The second constraint is to preserve the global "shape" of the original layout by maintaining all proximity relations between the nodes.
 
+\subsection{Overlap removal between near nodes}
+\subsubsection{Use of a proximity graph - Delaunay Triangulation}
+Why DT ? Because planar !
 
+\subsubsection{Ideal edge length}
+Overlap factor
+Ideal edge length
+
+\subsubsection{Proximity stress model}
+
+\subsubsection{Termination}
+
+\subsection{Overlap removal between non-near nodes}
+
+Why do we need a second stage ?
+\subsubsection{Scan-line algorithm}
 
 \bigskip
 \begin{algorithm}[H]
@@ -91,14 +106,30 @@ The PRISM algorithm focuses on two main constraints for the final layout of the 
 (no more overlaps found by the scan-line algorithm)
 \end{algorithm}
 
+\subsection{Dissimilarity metrics}
+
+\subsubsection{Area}
+\subsubsection{Edge length ratio}
+\subsubsection{Vertices displacement}
+
 \section{Complexity}
 
 \chapter{Implementation within Tulip}
 
-\section{Tulip node structure}
-\section{Resolution of the stress model}
-\section{Scan-line algorithm}
+\section{Tulip framework}
 
+Tulip presentation
+Tulip node structure (problems with label size)
+Solution : forcing node size and labels
+
+\section{Resolution of the stress model}
+\subsubsection{Preconditioned conjugate gradient}
+Not possible natively in Tulip
+Too many dependencies in GraphViz
+\subsubsection{Gradient descent - Kamada \& Kawai}
+Implementation done ?
+\section{Scan-line algorithm}
+Implementation details
 \chapter{Tests and results}
 
 \section{Use of GraphViz}
