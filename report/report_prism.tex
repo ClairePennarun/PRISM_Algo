@@ -56,19 +56,59 @@ Different algorithms have been devised to answer the problem.
 %Partie : "presentation du projet"
 Our project consists in understanding the algorithm PRISM proposed by Gansner and Hu in \cite{GH08} and in analyzing the feasability of its implementation as a plugin for the Tulip software. %(ici, mettre une reference pour Tulip !)
 
+
+%% Faire une section "notations" : au debut de PRISM ou a la fin de l'intro ?
+% notations des graphes, position d'un noeud, largeur / longueur
+
 \chapter{PRISM algorithm}
 
 \section{Description of the algorithm}
 
 The PRISM algorithm focuses on two main constraints for the final layout of the graph. First, the area taken by the layout must be minimal. The second constraint is to preserve the global "shape" of the original layout by maintaining all proximity relations between the nodes.
 
+The PRISM algorithm runs in two main steps ; in a first step, it removes iteratively the overlaps between near nodes of the given graph $G$. Then it finds the non-near overlaping nodes and removes these overlaps as well.
+
+We consider for this algorithm that a node $i$ has a certain width $w_i$ and height $h_i$, thus forming a rectangle containing the label, likely to cause overlaps.
+
 \subsection{Overlap removal between near nodes}
+
 \subsubsection{Use of a proximity graph - Delaunay Triangulation}
-Why DT ? Because planar !
+
+To find easily the overlaps between near nodes of the graph $G$, it will efficient to work on a proximity graph of $G$. 
+
+A \emph{proximity graph} is a graph in which two vertices are connected by an edge if (and only if) they satisfy a given geometrical property.
+
+\bigskip
+
+The \emph{Delaunay triangulation} (DT) of a graph $G$ is a triangulation of the graph such that none of the circumscribed circles of the triangles in DT(G) contains a vertex. This particular triangulation also maximises the minimum angle of the triangles found.
+
+The Delaunay triangulation of $G$, as a triangulation, is also a planar graph, and has thus at most $3n -6$ edges (if $|V(G)| = n$), which is a very practical parameter for the algorithm.
+
+\bigskip
+
+The nearest neighbors of a vertex $v \in V(G)$ tend to form triangles with $v$ and in particular, the closest neighbor of $v$ has an edge with $v$ in DT(G), as the nearest neighbor graph of $G$ is a subgraph of DT(G).
+
+In the PRISM algorithm, we consider that the near nodes in $G$ are connected by an edge in the Delaunay triangulation of $G$.
+
+Thus, the algorithm's first goal is to remove overlaps on the edges of the Delaunay triangulation of $G$.
 
 \subsubsection{Ideal edge length}
-Overlap factor
-Ideal edge length
+The idea is to find the "ideal length" of the Delaunay triangulation edges : the "ideal length" of an edge is such that the two edge ends have no overlap.
+
+\bigskip
+In order to do that, we calculate an \emph{overlap factor} $f_{ij}$ for each edge $(i,j)$ ($i,j \in V(G)$) of the Delaunay triangulation of $G$ :
+
+\[ f_{ij} = \max ( \min (\frac{w_i/2 + w_j/2}{x_i - x_j}, 
+\frac{h_i/2 + h_j/2}{y_i - y_j}), 1)\]
+
+where $(x_i,y_i)$ are the coordinates of vertex $i$, $w_i$ its width and $h_i$ its height.
+
+If two nodes $i$ and $j$ have no overlap, then $f_{ij} = 1$. 
+If $i$ and $j$ do overlap, then that overlap can be removed by expanding the edge $(i,j)$ by the overlap factor found $f_{ij}$. %% Ajouter figure
+
+Thus, the "ideal length" of an edge of the Delaunay triangulation is $f_{ij}||p_i - p_j||$, where $p_i$ is the initial set of coordinates of the node $i$.
+
+
 
 \subsubsection{Proximity stress model}
 
