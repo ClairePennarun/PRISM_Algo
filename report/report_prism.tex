@@ -106,11 +106,34 @@ where $(x_i,y_i)$ are the coordinates of vertex $i$, $w_i$ its width and $h_i$ i
 If two nodes $i$ and $j$ have no overlap, then $f_{ij} = 1$. 
 If $i$ and $j$ do overlap, then that overlap can be removed by expanding the edge $(i,j)$ by the overlap factor found $f_{ij}$. %% Ajouter figure
 
-Thus, the "ideal length" of an edge of the Delaunay triangulation is $f_{ij}||p_i - p_j||$, where $p_i$ is the initial set of coordinates of the node $i$.
+\bigskip
+Thus, the "ideal length" of an edge of the Delaunay triangulation is $l_ij = f_{ij}||p_i - p_j||$, where $p_i$ is the initial set of coordinates of the node $i$.
 
-
+We now want to find coordinates for the nodes of the initial graph such that the edges length in $DT(G)$ are close to their ideal length.
 
 \subsubsection{Proximity stress model}
+
+Finding this new set of coordinates means minimizing the following sum :
+
+\[ \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2\]
+
+where $w_{ij}$ is a classic weighting factor, used to equalize the contributions to the stress from the different edges and $l_{ij}$ is the overlap factor.
+
+But there are some situations where keeping $l_{ij}$ is not a good idea (see figure) % faire un dessin d'apres l'article
+
+We thus avoid removing the big overlaps in one iteration only.
+So we have to replace $l_{ij}$ by $\min(l_{ij},s)$, where $s > 1$ is a overlap limiting factor. The authors found that $s = 1.5$ worked well.
+
+We now want to minimize :
+
+\[ \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - \min(l_{ij},s))^2\]
+
+This type of sum is called a "stress function", in analogy with the well studied \emph{stress model}. %mettre reference !
+The above sum is called the \emph{proximity stress model}.
+
+
+\bigskip
+
 
 \subsubsection{Termination}
 
