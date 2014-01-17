@@ -74,7 +74,7 @@ We consider for this algorithm that a node $i$ has a certain width $w_i$ and hei
 
 \subsubsection{Use of a proximity graph - Delaunay Triangulation}
 
-To find easily the overlaps between near nodes of the graph $G$, it will efficient to work on a proximity graph of $G$. 
+To find easily the overlaps between near nodes of the graph $G$, it will efficient to work on a proximity graph of $G$. Such a graph will also guarantee the preservation of the proximity relations during the different stages of the algorithm.
 
 A \emph{proximity graph} is a graph in which two vertices are connected by an edge if (and only if) they satisfy a given geometrical property.
 
@@ -90,7 +90,7 @@ The nearest neighbors of a vertex $v \in V(G)$ tend to form triangles with $v$ a
 
 In the PRISM algorithm, we consider that the near nodes in $G$ are connected by an edge in the Delaunay triangulation of $G$.
 
-Thus, the algorithm's first goal is to remove overlaps on the edges of the Delaunay triangulation of $G$.
+Thus, the algorithm's first goal is to remove overlaps along the edges of the Delaunay triangulation of $G$.
 
 \subsubsection{Ideal edge length}
 The idea is to find the "ideal length" of the Delaunay triangulation edges : the "ideal length" of an edge is such that the two edge ends have no overlap.
@@ -107,7 +107,7 @@ If two nodes $i$ and $j$ have no overlap, then $f_{ij} = 1$.
 If $i$ and $j$ do overlap, then that overlap can be removed by expanding the edge $(i,j)$ by the overlap factor found $f_{ij}$. %% Ajouter figure
 
 \bigskip
-Thus, the "ideal length" of an edge of the Delaunay triangulation is $l_ij = f_{ij}||p_i - p_j||$, where $p_i$ is the initial set of coordinates of the node $i$.
+Thus, the "ideal length" of an edge of the Delaunay triangulation is $l_{ij} = f_{ij}||p_i - p_j||$, where $p_i$ is the initial set of coordinates of a node $i$.
 
 We now want to find coordinates for the nodes of the initial graph such that the edges length in $DT(G)$ are close to their ideal length.
 
@@ -117,12 +117,12 @@ Finding this new set of coordinates means minimizing the following sum :
 
 \[ \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2\]
 
-where $w_{ij}$ is a classic weighting factor, used to equalize the contributions to the stress from the different edges and $l_{ij}$ is the overlap factor.
+where $l_{ij}$ is the overlap factor and $w_{ij}$ is a classic weighting factor, used to equalize the contributions to the total sum from the different edges.
 
 But there are some situations where keeping $l_{ij}$ is not a good idea (see figure) % faire un dessin d'apres l'article
 
-We thus avoid removing the big overlaps in one iteration only.
-So we have to replace $l_{ij}$ by $\min(l_{ij},s)$, where $s > 1$ is a overlap limiting factor. The authors found that $s = 1.5$ worked well.
+We thus want to avoid removing the "big" overlaps in one iteration only.
+So we have to replace $l_{ij}$ by $\min(l_{ij},s)$, where $s > 1$ will be a limiting factor. The authors found that $s = 1.5$ worked well.
 
 We now want to minimize :
 
@@ -131,11 +131,22 @@ We now want to minimize :
 This type of sum is called a "stress function", in analogy with the well studied \emph{stress model}. %mettre reference !
 The above sum is called the \emph{proximity stress model}.
 
+\bigskip
+The minimization of the sum gives new positions for the nodes of $G$.
+
+\subsubsection{Iteration and termination}
+This first phase provides us with a new layout of the graph $G$, in which the nodes positions are given according to the previous minimization of the proximity stress model.
+
+This layout may still contain overlaps. We must thus iterate the construction of the Delaunay triangulation, the computation of the overlap factors, the minimization of the proximity stress model and the move of the nodes until no more overlaps occur along the edges of the Delaunay triangulation of the graph.
 
 \bigskip
+The process of the first stage makes clear that no overlaps can appear : the distance between nodes can only be increasing. 
 
+But the authors do not explain formally the reason of the termination of this phase : the stress function could always be smaller but never reach a local minimum.
 
-\subsubsection{Termination}
+The author's implementation of PRISM contains a threshold : if the gain in the minimization of the stress function is smaller, the first phase of the algorithm ends.
+
+%% A preciser et detailler
 
 \subsection{Overlap removal between non-near nodes}
 
