@@ -76,17 +76,17 @@ We consider for this algorithm that a node $i$ has a certain width $w_i$ and hei
 
 To find easily the overlaps between near nodes of the graph $G$, it will efficient to work on a proximity graph of $G$. Such a graph will also guarantee the preservation of the proximity relations during the different stages of the algorithm.
 
-A \emph{proximity graph} is a graph in which two vertices are connected by an edge if (and only if) they satisfy a given geometrical property.
+A \emph{proximity graph} is a graph in which two vertices are connected by an edge if (and only if) they satisfy a given geometrical property (a survey on proximity graphs can be found in \cite{JT92}).
 
 \bigskip
 
-The \emph{Delaunay triangulation} (DT) of a graph $G$ is a triangulation of the graph such that none of the circumscribed circles of the triangles in DT(G) contains a vertex. This particular triangulation also maximises the minimum angle of the triangles found.
+The \emph{Delaunay triangulation} (DT) (named after the work of Delaunay \cite{De34}) of a graph $G$ is a triangulation of the graph such that none of the circumscribed circles of the triangles in DT(G) contains a vertex. This particular triangulation also maximises the minimum angle of the triangles found.
 
 The Delaunay triangulation of $G$, as a triangulation, is also a planar graph, and has thus at most $3n -6$ edges (if $|V(G)| = n$), which is a very practical parameter for the algorithm.
 
 \bigskip
 
-The nearest neighbors of a vertex $v \in V(G)$ tend to form triangles with $v$ and in particular, the closest neighbor of $v$ has an edge with $v$ in DT(G), as the nearest neighbor graph of $G$ is a subgraph of DT(G).
+The nearest neighbors of a vertex $v \in V(G)$ tend to form triangles with $v$ and in particular, the closest neighbor of $v$ has an edge with $v$ in DT(G), as the nearest neighbor graph of $G$ is a subgraph of DT(G) (see \cite{JT92}).
 
 In the PRISM algorithm, we consider that the near nodes in $G$ are connected by an edge in the Delaunay triangulation of $G$.
 
@@ -128,7 +128,7 @@ We now want to minimize :
 
 \[ \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - \min(l_{ij},s))^2\]
 
-This type of sum is called a "stress function", in analogy with the well studied \emph{stress model}. %mettre reference !
+This type of sum is called a "stress function", in analogy with the well studied \emph{stress model} introduced by Kruskal in \cite{Kr64} and applied to graph drawing by Kamada and Kawai in \cite{KK89}. 
 The above sum is called the \emph{proximity stress model}.
 
 \bigskip
@@ -192,7 +192,7 @@ Why do we need a second stage ?
 
 \section{Tulip framework}
 
-Tulip presentation
+Tulip presentation \cite{AA12}
 
 Tulip node structure (problems with label size)
 
