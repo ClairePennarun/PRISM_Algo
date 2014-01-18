@@ -35,6 +35,8 @@
 \tableofcontents
 \newpage
 
+% abstract
+
 \chapter{Subject presentation and state of the art}
 
 %Partie "domaine general : graph drawing"
@@ -56,6 +58,7 @@ Different algorithms have been devised to answer the problem.
 %Partie : "presentation du projet"
 Our project consists in understanding the algorithm PRISM proposed by Gansner and Hu in \cite{GH08} and in analyzing the feasability of its implementation as a plugin for the Tulip software. %(ici, mettre une reference pour Tulip !)
 
+% Bien expliquer pourquoi on veut garder les relations de proximité
 
 %% Faire une section "notations" : au debut de PRISM ou a la fin de l'intro ?
 % notations des graphes, position d'un noeud, largeur / longueur
@@ -81,7 +84,7 @@ A \emph{proximity graph} is a graph in which two vertices are connected by an ed
 \bigskip
 
 The \emph{Delaunay triangulation} (DT) (named after the work of Delaunay \cite{De34}) of a graph $G$ is a triangulation of the graph such that none of the circumscribed circles of the triangles in DT(G) contains a vertex. This particular triangulation also maximises the minimum angle of the triangles found.
-
+% pas de point à l'INTERIEUR du cercle
 The Delaunay triangulation of $G$, as a triangulation, is also a planar graph, and has thus at most $3n -6$ edges (if $|V(G)| = n$), which is a very practical parameter for the algorithm.
 
 \bigskip
@@ -119,7 +122,7 @@ Finding this new set of coordinates means minimizing the following sum :
 
 where $l_{ij}$ is the overlap factor and $w_{ij}$ is a classic weighting factor, used to equalize the contributions to the total sum from the different edges.
 
-But there are some situations where keeping $l_{ij}$ is not a good idea (see figure) % faire un dessin d'apres l'article
+But there are some situations where keeping $l_{ij}$ is not a good idea \texcolor{red}{(see figure)} % faire un dessin d'apres l'article
 
 We thus want to avoid removing the "big" overlaps in one iteration only.
 So we have to replace $l_{ij}$ by $\min(l_{ij},s)$, where $s > 1$ will be a limiting factor. The authors found that $s = 1.5$ worked well.
@@ -141,7 +144,7 @@ This layout may still contain overlaps. We must thus iterate the construction of
 
 \bigskip
 The process of the first stage makes clear that no overlaps can appear : the distance between nodes can only be increasing. 
-
+% et on est dans un graphe rigide
 But the authors do not explain formally the reason of the termination of this phase : the stress function could always be smaller but never reach a local minimum.
 
 The author's implementation of PRISM contains a threshold : if the gain in the minimization of the stress function is smaller, the first phase of the algorithm ends.
@@ -150,8 +153,21 @@ The author's implementation of PRISM contains a threshold : if the gain in the m
 
 \subsection{Overlap removal between non-near nodes}
 
-Why do we need a second stage ?
+
+After the first step, it is possible that some overlaps are still not remove. To resolve that, we have to use a scan-line algorithm.
+% mettre VPSC dans la biblio
 \subsubsection{Scan-line algorithm}
+
+A scan-line algorithm is a algorithm which will considere all the points of a layout. \\
+We can not use a algorithm which use the graph properties because the vertex don't know the position of the others vertex, so we can't find the overlap by using the vertex properties.\\
+For all the ordinate's points we considere all the points in the abscissa. If there is an overlap in a point, we add the edge (between the two vertices overlapping) in the Delaunay triangulation. 
+% à etoffer
+
+
+\bigskip
+It is notable that the opponent algorithm, VPSC, only use a scan-line algorithm \textcolor{red}{(mettre lien)}
+
+
 
 \bigskip
 \begin{algorithm}[H]
@@ -183,11 +199,20 @@ Why do we need a second stage ?
 \subsection{Dissimilarity metrics}
 
 \subsubsection{Area}
+As said before, it is easy to remove all the overlaps by increase all the edges. But the final layout can be extremely large and unreadable, so we want a area as small as possible.
+
 \subsubsection{Edge length ratio}
+We calculate the ratio between the edge length of the original layout and the final one. 
+This metrics has to be as small as possible to minimaze the di
 \subsubsection{Vertices displacement}
+
+
+$\rightarrow$ expliquer comment on fait : matrice de rotation, translation, ajoustement de taille, addition de tout ça
 
 \section{Complexity}
 
+
+$\rightarrow$ comparaison avec VPSC
 \chapter{Implementation within Tulip}
 
 \section{Tulip framework}
