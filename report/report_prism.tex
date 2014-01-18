@@ -107,7 +107,7 @@ If two nodes $i$ and $j$ have no overlap, then $f_{ij} = 1$.
 If $i$ and $j$ do overlap, then that overlap can be removed by expanding the edge $(i,j)$ by the overlap factor found $f_{ij}$. %% Ajouter figure
 
 \bigskip
-Thus, the "ideal length" of an edge of the Delaunay triangulation is $l_{ij} = f_{ij}||p_i - p_j||$, where $p_i$ is the initial set of coordinates of a node $i$.
+Thus, the "ideal length" of an edge of the Delaunay triangulation is $d_{ij} = f_{ij}||p_i - p_j||$, where $p_i$ is the initial set of coordinates of a node $i$.
 
 We now want to find coordinates for the nodes of the initial graph such that the edges length in $DT(G)$ are close to their ideal length.
 
@@ -115,18 +115,14 @@ We now want to find coordinates for the nodes of the initial graph such that the
 
 Finding this new set of coordinates means minimizing the following sum :
 
-\[ \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2\]
+\[ \sum_{\{i,j\} \in E(DT(G))} w_{ij}(||p_i - p_j|| - d_{ij})^2\]
 
-where $l_{ij}$ is the overlap factor and $w_{ij}$ is a classic weighting factor, used to equalize the contributions to the total sum from the different edges.
+where $d_{ij}$ is the ideal length of the $\{i,j\}$ edge and $w_{ij}$ is a classic weighting factor, used to equalize the contributions to the total sum from the different edges ($w_{ij} = 1/(d_{ij}^2)$) .
 
-But there are some situations where keeping $l_{ij}$ is not a good idea (see figure) % faire un dessin d'apres l'article
+But there are some situations where keeping $f_{ij}$ is not a good idea (see figure) % faire un dessin d'apres l'article
 
 We thus want to avoid removing the "big" overlaps in one iteration only.
-So we have to replace $l_{ij}$ by $\min(l_{ij},s)$, where $s > 1$ will be a limiting factor. The authors found that $s = 1.5$ worked well.
-
-We now want to minimize :
-
-\[ \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - \min(l_{ij},s))^2\]
+So we have to replace $f_{ij}$ by $\min(f_{ij},s)$, where $s > 1$ will be a limiting factor. The authors found that $s = 1.5$ worked well.
 
 This type of sum is called a "stress function", in analogy with the well studied \emph{stress model} introduced by Kruskal in \cite{Kr64} and applied to graph drawing by Kamada and Kawai in \cite{KK89}. 
 The above sum is called the \emph{proximity stress model}.
