@@ -42,7 +42,7 @@
 %Partie "domaine general : graph drawing"
 A graph is a data structure encoding information with the use of nodes and edges (which are binary relations between nodes).
 
-Graph drawing aims to represent given information as a graph, generally through a "node-link" layout, letting nodes and edges be displayed. 
+Graph drawing aims to represent a given information as a graph, generally through a "node-link" layout, letting nodes and edges be displayed. 
 
 \bigskip
 %Partie "domaine specifique : node overlap + etat de l'art"
@@ -50,9 +50,14 @@ Most of the layout algorithms consider nodes as points, but some need to let app
 
 This could lead to an overlap of some nodes. That must be avoided, as it clearly confuses the understanding of the graph.
 
-Many approachs are generally considered ; the easiest to apply is to "scale" the layout until no overlaps occur. This method has the advantage to preserve the global shape of the layout, but the area of the graph can become very inconvenient. That is why a compromise between the preservation of the shape of the graph and a minimization of the total area has to be found.
+Moreover, as we generally consider that the original layout contains significant information, an other parameter to deal with is to maintain the "global shape" of the initial representation. 
 
-Different algorithms have been devised to answer the problem. 
+This "global shape" can be seen as "preserving the proximity relations between nodes", "preserving the orthogonal ordering of nodes"(see ref 31) or "preserving the relative positions of nodes by limiting the vertices displacement"(see Voro), and a choice between these criteria has to be made.
+
+The easiest approach is to "scale" the layout until no overlaps occur. This method has the advantage to preserve the global shape of the layout, but the area of the graph can become very inconvenient. That is why a compromise between the preservation of the "shape of the graph" and a minimization of the total area has to be found.
+
+\bigskip
+Different algorithms have been devised to answer the problem, each of them focusing on a different "global shape" definition.
 
 \bigskip
 %Partie : "presentation du projet"
@@ -155,7 +160,7 @@ The author's implementation of PRISM contains a threshold : if the gain in the m
 
 The first step removes the overlap between ends of edges of the Delaunay triangulation of the graph. But some overlaps can be caused by nodes not being near, and thus not generating an edge in the proximity graph. These overlaps can not have been removed by the first stage of the PRISM algorithm.
 
-To find these still overlaping nodes, we have to use a scan-line algorithm.
+To find these still overlapping nodes, we have to use a scan-line algorithm.
 % mettre VPSC dans la biblio
 \subsubsection{Scan-line algorithm}
 
@@ -172,6 +177,10 @@ It is interesting to note that one of the opponent algorithms, VPSC, only uses a
 
 \subsubsection{Overlap removal}
 
+The second stage uses the same processus as the first one, only adding the overlapping edges found by the scan-line algorithm to the Delaunay triangulation before the calculation of the overlap factors and the resolution of the proximity stress model.
+
+This stage ends when no more overlaps are found by the scan-line algorithm.
+% A completer ?
 
 \bigskip
 \begin{algorithm}[H]
@@ -202,16 +211,22 @@ It is interesting to note that one of the opponent algorithms, VPSC, only uses a
 
 \subsection{Dissimilarity metrics}
 
+To be able to compare different graph layouts, the authors propose three dissimilarity metrics : the area taken by the layout, a metric based on the edge length ratio in the proximity graphs of the initial and final layouts, and a metric measuring the vertices displacement between the initial and the final layouts.
+
 \subsubsection{Area}
-As said before, it is easy to remove all the overlaps by increase all the edges. But the final layout can be extremely large and unreadable, so we want a area as small as possible.
+As said before, it is easy to remove all the overlaps by extending all the edges of the initial layout. But the final layout can be extremely large and thus unreadable, so we want to keep an area as small as possible.
 
 \subsubsection{Edge length ratio}
-We calculate the ratio between the edge length of the original layout and the final one. 
-This metrics has to be as small as possible to minimaze the di
+We first calculate the ratio between the edge lengths of the proximity graphs of the original layout and the final one. The metric is then defined as the normalized standard deviation to the mean ratio found.
+
+This metric has to be as small as possible to minimize the changes made to the edges length during the algorithm.
+
+The edge length ratio has to be calculated on a rigid graph (as the Delaunay triangulations) to be meaningful : two layouts of the same graph can be completely different if the graph is not rigid. (exemple ?)
+
 \subsubsection{Vertices displacement}
 
 
-$\rightarrow$ expliquer comment on fait : matrice de rotation, translation, ajoustement de taille, addition de tout ça
+$\rightarrow$ expliquer comment on fait : matrice de rotation, translation, ajustement de taille, addition de tout ça
 
 \section{Complexity}
 
