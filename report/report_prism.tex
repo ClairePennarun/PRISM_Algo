@@ -43,7 +43,7 @@
 %Partie "domaine general : graph drawing"
 A graph is a data structure encoding information with the use of nodes and edges (which are binary relations between nodes).
 
-Graph drawing aims to represent a given information as a graph, generally through a "node-link" layout, letting nodes and edges be displayed. 
+Graph drawing aims to represent a given information as a graph, generally through a "node-link" layout, letting only nodes and edges (be) displayed. 
 
 \bigskip
 %Partie "domaine specifique : node overlap + etat de l'art"
@@ -57,27 +57,31 @@ This "global shape" can be seen as "preserving the proximity relations between n
 
 The easiest approach is to "scale" the layout until no overlaps occur. This method has the advantage to preserve the global shape of the layout, but the area of the graph can become very inconvenient. That is why a compromise between the preservation of the "shape of the graph" and a minimization of the total area has to be found.
 
-\bigskip
-Different algorithms have been devised to answer the problem, each of them focusing on a different "global shape" definition. We consider here only algorithms dealing with the overlap removal as a post-processing step (after the graph has been drawn).
-
-Spring-electrical model : Eades \cite{Eades84} and Fruchterman and Reingold \cite{FR91}, recentely adapted by various authors (\cite{HK02}, \cite{Li05})
-
-Stress model \cite{Kamada89}
-
-Voronoi cluster busting algo \cite{Gansner98}
-
-VPSC \cite{VPSC06}
-
-PRISM \cite{Gansner08}
+Different algorithms have been devised to answer the problem, each of them focusing on a different "global shape" definition. 
 
 \bigskip
-Since PRISM : 
+The first approach is to try to avoid overlaps while generating the layout.
 
-ePRISM : PRISM on overlap of edges \cite{Hu09}
+The spring-electrical model presented by Eades \cite{Eades84} and Fruchterman and Reingold \cite{FR91} considers the edges as springs between nodes, so that the spring forces move the nodes to a minimal energy state of the global system. A repelling force between non-adjacent nodes is added.
+This model has been adapted by various authors (\cite{HK02}, \cite{Li05}) to take the node size into account, generally as increased repulsive forces.
 
-Work on Wordle (\url{http://www.wordle.net/}) : Mani-Wordle \cite{Koh10} and RWordle \cite{SSSK12}
+The stress model of Kamada and Kawai \cite{Kamada89} is based on the assumption that a graph layout is "good" if the distance between two vertices is close to the theoretical graph distance between these vertices, i.e. to the length of their shortest path. It can also be extended to avoid as much as possible overlap along the edges.
+
+These two models (spring-electrical model and stress model) try to avoid all overlaps, but use generally a post-processing algorithm to ensure the total overlap removal.
 
 More details about the force-directed drawing algorithms can be found in \cite{Kob13}.
+
+\bigskip
+The second possibility is to remove overlaps after the drawing of the graph: there are post-processing algorithms.
+
+The Voronoi cluster busting algorithm \cite{Gansner98} restrains the possible displacement of a node with the use of Voronoi cells. This restriction aims to help preserving the relative positions of the nodes. In practice, the algorithm often requires a lot of iterations and the global similarity with the initial layout can be low. %(mettre exemples)
+
+The Satisfy\_VPSC algorithm \cite{VPSC06}, solving the "variable placements with separation constraints" problem, moves iteratively the nodes in the horizontal and in the vertical dimensions. This algorithm aims to minimize the vertices displacement but can generate layouts that are very dissimilar to the initial layout. %(mettre exemples)
+
+Some work on word cloud generators like Wordle (\url{http://www.wordle.net/}) allowed to develop new algorithms like Mani-Wordle \cite{Koh10} and RWordle \cite{SSSK12} based on a spiral scheme for the random placement of text labels in order to overcome overlaps.
+
+
+
 
 \bigskip
 %Partie : "presentation du projet"
@@ -284,6 +288,10 @@ Implementation details
 Tests and time of the Kamada and Kawai solution
 
 \chapter{Conclusion}
+
+Since PRISM :
+
+ePRISM : PRISM on overlap of edges \cite{Hu09}
 
 \bibliographystyle{plain}
 \bibliography{report_prism}
