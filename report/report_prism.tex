@@ -250,8 +250,7 @@ The edge length ratio has to be calculated on a rigid graph (as the Delaunay tri
 
 \subsubsection{Vertices displacement}
 
-
-$\rightarrow$ expliquer comment on fait : matrice de rotation, translation, ajustement de taille, addition de tout ça
+The third measure of dissimilarity is the calculation of the displacement of vertices between the original layout and the final one. We consider that layouts resulting from a scaling, a shift or a rotation are identical. Thus, computing the displacement of vertices means finding the optimal scaling, shift and rotation minimizing the displacement. (formule ?)
 
 \section{Complexity}
 
@@ -261,11 +260,15 @@ $\rightarrow$ comparaison avec VPSC
 
 \section{The Tulip framework}
 
-Tulip presentation \cite{Auber12}
+The Tulip framework \cite{Auber12}, developed mainly by the Data Visualization team of the LaBRI (Bordeaux), is a data visualization software dedicated to the analysis and visualization of relational data. It focuses on the manipulation of graphs. Our goal was to implement the PRISM algorithm as a plugin for Tulip, reusing some of the tools already present in the software, such as the calculation of the Delaunay triangulation of a graph.
 
-Tulip node structure (problems with label size)
+Tulip uses particular structures to deal with graph manipulations, and one of these structure is very important for the PRISM algorithm : the \texttt{node} structure.
 
-Solution : forcing node size and labels
+The PRISM algorithm considers that the label is part of the node, and that the size of the node is determined by the size of the underlying label.
+
+But in Tulip, the labels are seen as a "property" of the graph, and are decorrelated from the nodes themselves. They generally are dynamic sized, and displayed in order to avoid overlaps. We thus do not have access to the size of labels.
+
+The solution was to increase the size of the nodes and to force the labels inside them (see figure). Thus, we could considerate that the "labels" were overlapping, even if it was artificially.
 
 \section{Resolution of the stress model}
 \subsubsection{Stress majorization}
@@ -277,7 +280,6 @@ Use of Eigen possible ?
 \subsubsection{Newton-Raphson method - Kamada \& Kawai}
 Implementation done : pseudo-code, explications
 
-Tests and time
 \section{Scan-line algorithm}
 Implementation details
 
