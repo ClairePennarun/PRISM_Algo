@@ -57,18 +57,33 @@ This "global shape" can be seen as "preserving the proximity relations between n
 The easiest approach is to "scale" the layout until no overlaps occur. This method has the advantage to preserve the global shape of the layout, but the area of the graph can become very inconvenient. That is why a compromise between the preservation of the "shape of the graph" and a minimization of the total area has to be found.
 
 \bigskip
-Different algorithms have been devised to answer the problem, each of them focusing on a different "global shape" definition.
+Different algorithms have been devised to answer the problem, each of them focusing on a different "global shape" definition. We consider here only algorithms dealing with the overlap removal as a post-processing step (after the graph has been drawn).
+
+Spring-electrical model
+
+Stress model
+
+Voronoi cluster busting algo
+
+PRISM \cite{GH08}
+
+Since PRISM : PRISM on overlap of edges, RWordle
+
 
 \bigskip
 %Partie : "presentation du projet"
-Our project consists in understanding the algorithm PRISM proposed by Gansner and Hu in \cite{GH08} and in analyzing the feasability of its implementation as a plugin for the Tulip software. %(ici, mettre une reference pour Tulip !)
+Our project consists in understanding the algorithm PRISM proposed by Gansner and Hu in \cite{GH08} and in analyzing the feasability of its implementation as a plugin for the Tulip software \cite{AA12}.
 
 % Bien expliquer pourquoi on veut garder les relations de proximité
 
-%% Faire une section "notations" : au debut de PRISM ou a la fin de l'intro ?
-% notations des graphes, position d'un noeud, largeur / longueur
+
 
 \chapter{PRISM algorithm}
+
+\section{Formal notations}
+
+%% Faire une section "notations" : au debut de PRISM ou a la fin de l'intro ?
+% notations des graphes, position d'un noeud, largeur / longueur
 
 \section{Description of the algorithm}
 
@@ -234,7 +249,7 @@ $\rightarrow$ expliquer comment on fait : matrice de rotation, translation, ajus
 $\rightarrow$ comparaison avec VPSC
 \chapter{Implementation within Tulip}
 
-\section{Tulip framework}
+\section{The Tulip framework}
 
 Tulip presentation \cite{AA12}
 
@@ -246,18 +261,18 @@ Solution : forcing node size and labels
 \subsubsection{Stress majorization}
 Not possible natively in Tulip
 
-Too many dependencies in GraphViz
+Too many dependencies in GraphViz (python script)
 
 Use of Eigen possible ?
 \subsubsection{Newton-Raphson method - Kamada \& Kawai}
-Implementation done
+Implementation done : pseudo-code, explications
 
 Tests and time
 \section{Scan-line algorithm}
 Implementation details
-\chapter{Tests and results}
 
-\section{Use of GraphViz}
+\section{Tests and results}
+Tests and time of the Kamada and Kawai solution
 
 \chapter{Conclusion}
 
