@@ -15,7 +15,7 @@
 \hfill
 
 \bigskip
-\huge{Technical Report} 
+\huge{Université de Bordeaux \par \Large Projet d'Etude et de Recherche} 
 \vfill
 \bigskip 
 \Huge 
@@ -24,7 +24,7 @@
 \Large Claire Pennarun \par 
 		Tatiana Rocher
 \vfill
-\Large Bordeaux 1 \par \Large Projet d'Etude et de Recherche		
+\Large Article by E.R. Gansner and Y. Hu (2009)	
 		\bigskip 
 \bigskip
 
@@ -43,7 +43,7 @@
 %Partie "domaine general : graph drawing"
 A graph is a data structure encoding information with the use of nodes and edges (which are binary relations between nodes).
 
-Graph drawing aims to represent a given information as a graph, generally through a "node-link" layout, letting only nodes and edges (be) displayed. 
+Graph drawing aims to represent a given information as a graph, generally through a "node-link" layout, letting only nodes and edges be displayed. 
 
 \bigskip
 %Partie "domaine specifique : node overlap + etat de l'art"
@@ -72,15 +72,13 @@ These two models (spring-electrical model and stress model) try to avoid all ove
 More details about the force-directed drawing algorithms can be found in \cite{Kob13}.
 
 \bigskip
-The second possibility is to remove overlaps after the drawing of the graph: there are post-processing algorithms.
+The second possibility is to remove overlaps after the graph is drawn : these are post-processing algorithms.
 
 The Voronoi cluster busting algorithm \cite{Gansner98} restrains the possible displacement of a node with the use of Voronoi cells. This restriction aims to help preserving the relative positions of the nodes. In practice, the algorithm often requires a lot of iterations and the global similarity with the initial layout can be low. %(mettre exemples)
 
 The Satisfy\_VPSC algorithm \cite{VPSC06}, solving the "variable placements with separation constraints" problem, moves iteratively the nodes in the horizontal and in the vertical dimensions. This algorithm aims to minimize the vertices displacement but can generate layouts that are very dissimilar to the initial layout. %(mettre exemples)
 
 Some work on word cloud generators like Wordle (\url{http://www.wordle.net/}) allowed to develop new algorithms like Mani-Wordle \cite{Koh10} and RWordle \cite{SSSK12} based on a spiral scheme for the random placement of text labels in order to overcome overlaps.
-
-
 
 
 \bigskip
@@ -95,16 +93,19 @@ Our project consists in understanding the algorithm PRISM proposed by Gansner an
 
 \section{Formal notations}
 
-%% Faire une section "notations" : au debut de PRISM ou a la fin de l'intro ?
-% notations des graphes, position d'un noeud, largeur / longueur
+We use the followind notations : $G = (V,E)$ denotes the current graph, with $V$ the set of vertices (or nodes), and $E$ the set of edges. The number of vertices and of edges are denoted respectively $|V|$ (or $n$) and $|E|$.
+
+An edge between two vertices $i$ and $j$ is denoted $(i,j)$.
+
+The position of a node $i$ in a layout is represented as a set of 2D coordinates $p_i = (x_i, y_i)$. The initial layout position is denoted as $p_i^0 = (x_i^0, y_i^0)$.
+
+We consider for the PRISM algorithm that a node $i$ has a certain width $w_i$ and height $h_i$, thus forming a rectangle containing the label, likely to cause overlaps.
 
 \section{Description of the algorithm}
 
 The PRISM algorithm focuses on two main constraints for the final layout of the graph. First, the area taken by the layout must be minimal. The second constraint is to preserve the global "shape" of the original layout by maintaining all proximity relations between the nodes.
 
-The PRISM algorithm runs in two main steps ; in a first step, it removes iteratively the overlaps between near nodes of the given graph $G$. Then it finds the non-near overlaping nodes and removes these overlaps as well.
-
-We consider for this algorithm that a node $i$ has a certain width $w_i$ and height $h_i$, thus forming a rectangle containing the label, likely to cause overlaps.
+The PRISM algorithm runs in two main steps ; in a first step, it removes iteratively the overlaps between near nodes of the given graph $G$. Then it finds the non-near overlapping nodes and removes these overlaps as well.
 
 \subsection{Overlap removal between near nodes}
 
@@ -116,8 +117,8 @@ A \emph{proximity graph} is a graph in which two vertices are connected by an ed
 
 \bigskip
 
-The \emph{Delaunay triangulation} (DT) (named after the work of Delaunay \cite{Delaunay34}) of a graph $G$ is a triangulation of the graph such that none of the circumscribed circles of the triangles in DT(G) contains a vertex. This particular triangulation also maximises the minimum angle of the triangles found.
-% pas de point à l'INTERIEUR du cercle
+The \emph{Delaunay triangulation} (DT) (named after the work of Delaunay \cite{Delaunay34}) of a graph $G$ is a triangulation of the graph such that none of the circumscribed circles of the triangles in DT(G) contains a vertex on the inside. This particular triangulation also maximises the minimum angle of the triangles found.
+
 The Delaunay triangulation of $G$, as a triangulation, is also a planar graph, and has thus at most $3n -6$ edges (if $|V(G)| = n$), which is a very practical parameter for the algorithm.
 
 \bigskip
@@ -134,8 +135,8 @@ The idea is to find the "ideal length" of the Delaunay triangulation edges : the
 \bigskip
 In order to do that, we calculate an \emph{overlap factor} $f_{ij}$ for each edge $(i,j)$ ($i,j \in V(G)$) of the Delaunay triangulation of $G$ :
 
-\[ f_{ij} = \max ( \min (\frac{w_i/2 + w_j/2}{x_i - x_j}, 
-\frac{h_i/2 + h_j/2}{y_i - y_j}), 1)\]
+\[ f_{ij} = \max \left( \min \left(\frac{w_i/2 + w_j/2}{x_i - x_j}, 
+\frac{h_i/2 + h_j/2}{y_i - y_j} \right), 1 \right)\]
 
 where $(x_i,y_i)$ are the coordinates of vertex $i$, $w_i$ its width and $h_i$ its height.
 
@@ -143,7 +144,7 @@ If two nodes $i$ and $j$ have no overlap, then $f_{ij} = 1$.
 If $i$ and $j$ do overlap, then that overlap can be removed by expanding the edge $(i,j)$ by the overlap factor found $f_{ij}$. %% Ajouter figure
 
 \bigskip
-Thus, the "ideal length" of an edge of the Delaunay triangulation is $l_{ij} = f_{ij}||p_i - p_j||$, where $p_i$ is the initial set of coordinates of a node $i$.
+Thus, the "ideal length" of an edge of the Delaunay triangulation is $l_{ij} = f_{ij}||p_i^0 - p_j^0||$, where $p_i^0$ is the initial set of coordinates of a node $i$.
 
 We now want to find coordinates for the nodes of the initial graph such that the edges length in $DT(G)$ are close to their ideal length.
 
@@ -158,11 +159,7 @@ where $l_{ij}$ is the overlap factor and $w_{ij}$ is a classic weighting factor,
 But there are some situations where keeping $l_{ij}$ is not a good idea (see figure) % faire un dessin d'apres l'article
 
 We thus want to avoid removing the "big" overlaps in one iteration only.
-So we have to replace $l_{ij}$ by $\min(l_{ij},s)$, where $s > 1$ will be a limiting factor. The authors found that $s = 1.5$ worked well.
-
-We now want to minimize :
-
-\[ \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - \min(l_{ij},s))^2\]
+So we have to replace $f_{ij}$ by $\min(f_{ij},s)$, where $s > 1$ will be a limiting factor. The authors found that $s = 1.5$ worked well.
 
 This type of sum is called a "stress function", in analogy with the well studied \emph{stress model} introduced by Kruskal in \cite{Kruskal64} and applied to graph drawing by Kamada and Kawai in \cite{Kamada89}. 
 The above sum is called the \emph{proximity stress model}.
@@ -178,9 +175,9 @@ This layout may still contain overlaps. We must thus iterate the construction of
 \bigskip
 The process of the first stage makes clear that no overlaps can appear : the distance between nodes can only be increasing and the proximity graph on which we are calculating, as a triangulation, is a rigid graph.
 
-But the authors do not explain formally the reason of the termination of this phase : the stress function could always be smaller but never reach a local minimum. Moreover, the number of iterations needed during the first phase is not explicited or bounded in the article.
+But the authors do not explain formally the reason of the termination of this phase : the stress function could always be smaller but never reach a local minimum. Moreover, the number of iterations needed during the first phase is not explicited nor bounded in the article.
 
-The author's implementation of PRISM contains a threshold : if the gain in the minimization of the stress function is smaller, the first phase of the algorithm ends.
+The authors' implementation of PRISM contains a threshold : if the gain in the minimization of the stress function is smaller, the first phase of the algorithm ends.
 
 %% A preciser et detailler
 
@@ -192,16 +189,16 @@ To find these still overlapping nodes, we have to use a scan-line algorithm.
 % mettre VPSC dans la biblio
 \subsubsection{Scan-line algorithm}
 
-A scan-line algorithm is a algorithm which will consider all the points of a layout.
+A scan-line algorithm is an algorithm which will consider all the points of a layout.
 
-We can not use a algorithm which uses the graph properties because the vertices do not know the positions of the others vertices, so we can not find the overlaps by using the vertices properties.
+We can not use a algorithm which uses the graph properties because the vertices do not know the positions of others vertices, so we can not find the overlaps by using the vertices properties.
 
 For all the ordinate's points we consider all the points in the abscissa. If there is an overlap at a point, we add the edge (between the two vertices overlapping) in the Delaunay triangulation. 
 % à etoffer
 
 
 \bigskip
-It is interesting to note that one of the opponent algorithms, VPSC, only uses a scan-line algorithm to remove all overlaps (mettre lien)
+It is interesting to note that one of the opponent algorithms, Satisfy\_VPSC \cite{VPSC06}, only uses a scan-line algorithm to remove all overlaps.
 
 \subsubsection{Overlap removal}
 
