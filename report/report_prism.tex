@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{amsmath}
+\usepackage{hyperref}
 
 \begin{document}
 
@@ -52,27 +53,35 @@ This could lead to an overlap of some nodes. That must be avoided, as it clearly
 
 Moreover, as we generally consider that the original layout contains significant information, an other parameter to deal with is to maintain the "global shape" of the initial representation. 
 
-This "global shape" can be seen as "preserving the proximity relations between nodes", "preserving the orthogonal ordering of nodes"(see ref 31) or "preserving the relative positions of nodes by limiting the vertices displacement"(see Voro), and a choice between these criteria has to be made.
+This "global shape" can be seen as "preserving the proximity relations between nodes", "preserving the orthogonal ordering of nodes"(see \cite{Mis95}) or "preserving the relative positions of nodes by limiting the vertices displacement"(see \cite{Gansner98}), and a choice between these criteria has to be made.
 
 The easiest approach is to "scale" the layout until no overlaps occur. This method has the advantage to preserve the global shape of the layout, but the area of the graph can become very inconvenient. That is why a compromise between the preservation of the "shape of the graph" and a minimization of the total area has to be found.
 
 \bigskip
 Different algorithms have been devised to answer the problem, each of them focusing on a different "global shape" definition. We consider here only algorithms dealing with the overlap removal as a post-processing step (after the graph has been drawn).
 
-Spring-electrical model
+Spring-electrical model : Eades \cite{Eades84} and Fruchterman and Reingold \cite{FR91}, recentely adapted by various authors (\cite{HK02}, \cite{Li05})
 
-Stress model
+Stress model \cite{Kamada89}
 
-Voronoi cluster busting algo
+Voronoi cluster busting algo \cite{Gansner98}
 
-PRISM \cite{GH08}
+VPSC \cite{VPSC06}
 
-Since PRISM : PRISM on overlap of edges, RWordle
+PRISM \cite{Gansner08}
 
+\bigskip
+Since PRISM : 
+
+ePRISM : PRISM on overlap of edges \cite{Hu09}
+
+Work on Wordle (\url{http://www.wordle.net/}) : Mani-Wordle \cite{Koh10} and RWordle \cite{SSSK12}
+
+More details about the force-directed drawing algorithms can be found in \cite{Kob13}.
 
 \bigskip
 %Partie : "presentation du projet"
-Our project consists in understanding the algorithm PRISM proposed by Gansner and Hu in \cite{GH08} and in analyzing the feasability of its implementation as a plugin for the Tulip software \cite{AA12}.
+Our project consists in understanding the algorithm PRISM proposed by Gansner and Hu in \cite{Gansner08} and in analyzing the feasability of its implementation as a plugin for the Tulip software \cite{Auber12}.
 
 % Bien expliquer pourquoi on veut garder les relations de proximité
 
@@ -103,7 +112,7 @@ A \emph{proximity graph} is a graph in which two vertices are connected by an ed
 
 \bigskip
 
-The \emph{Delaunay triangulation} (DT) (named after the work of Delaunay \cite{De34}) of a graph $G$ is a triangulation of the graph such that none of the circumscribed circles of the triangles in DT(G) contains a vertex. This particular triangulation also maximises the minimum angle of the triangles found.
+The \emph{Delaunay triangulation} (DT) (named after the work of Delaunay \cite{Delaunay34}) of a graph $G$ is a triangulation of the graph such that none of the circumscribed circles of the triangles in DT(G) contains a vertex. This particular triangulation also maximises the minimum angle of the triangles found.
 % pas de point à l'INTERIEUR du cercle
 The Delaunay triangulation of $G$, as a triangulation, is also a planar graph, and has thus at most $3n -6$ edges (if $|V(G)| = n$), which is a very practical parameter for the algorithm.
 
@@ -151,7 +160,7 @@ We now want to minimize :
 
 \[ \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - \min(l_{ij},s))^2\]
 
-This type of sum is called a "stress function", in analogy with the well studied \emph{stress model} introduced by Kruskal in \cite{Kr64} and applied to graph drawing by Kamada and Kawai in \cite{KK89}. 
+This type of sum is called a "stress function", in analogy with the well studied \emph{stress model} introduced by Kruskal in \cite{Kruskal64} and applied to graph drawing by Kamada and Kawai in \cite{Kamada89}. 
 The above sum is called the \emph{proximity stress model}.
 
 \bigskip
@@ -251,7 +260,7 @@ $\rightarrow$ comparaison avec VPSC
 
 \section{The Tulip framework}
 
-Tulip presentation \cite{AA12}
+Tulip presentation \cite{Auber12}
 
 Tulip node structure (problems with label size)
 
