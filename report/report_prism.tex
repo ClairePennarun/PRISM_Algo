@@ -35,6 +35,8 @@
 \tableofcontents
 \newpage
 
+% abstract
+
 \chapter{Subject presentation and state of the art}
 
 %Partie "domaine general : graph drawing"
@@ -56,6 +58,7 @@ Different algorithms have been devised to answer the problem.
 %Partie : "presentation du projet"
 Our project consists in understanding the algorithm PRISM proposed by Gansner and Hu in \cite{GH08} and in analyzing the feasability of its implementation as a plugin for the Tulip software. %(ici, mettre une reference pour Tulip !)
 
+% Bien expliquer pourquoi on veut garder les relations de proximité
 
 %% Faire une section "notations" : au debut de PRISM ou a la fin de l'intro ?
 % notations des graphes, position d'un noeud, largeur / longueur
@@ -81,7 +84,7 @@ A \emph{proximity graph} is a graph in which two vertices are connected by an ed
 \bigskip
 
 The \emph{Delaunay triangulation} (DT) (named after the work of Delaunay \cite{De34}) of a graph $G$ is a triangulation of the graph such that none of the circumscribed circles of the triangles in DT(G) contains a vertex. This particular triangulation also maximises the minimum angle of the triangles found.
-
+% pas de point à l'INTERIEUR du cercle
 The Delaunay triangulation of $G$, as a triangulation, is also a planar graph, and has thus at most $3n -6$ edges (if $|V(G)| = n$), which is a very practical parameter for the algorithm.
 
 \bigskip
@@ -107,7 +110,7 @@ If two nodes $i$ and $j$ have no overlap, then $f_{ij} = 1$.
 If $i$ and $j$ do overlap, then that overlap can be removed by expanding the edge $(i,j)$ by the overlap factor found $f_{ij}$. %% Ajouter figure
 
 \bigskip
-Thus, the "ideal length" of an edge of the Delaunay triangulation is $d_{ij} = f_{ij}||p_i - p_j||$, where $p_i$ is the initial set of coordinates of a node $i$.
+Thus, the "ideal length" of an edge of the Delaunay triangulation is $l_{ij} = f_{ij}||p_i - p_j||$, where $p_i$ is the initial set of coordinates of a node $i$.
 
 We now want to find coordinates for the nodes of the initial graph such that the edges length in $DT(G)$ are close to their ideal length.
 
@@ -115,14 +118,18 @@ We now want to find coordinates for the nodes of the initial graph such that the
 
 Finding this new set of coordinates means minimizing the following sum :
 
-\[ \sum_{\{i,j\} \in E(DT(G))} w_{ij}(||p_i - p_j|| - d_{ij})^2\]
+\[ \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2\]
 
-where $d_{ij}$ is the ideal length of the $\{i,j\}$ edge and $w_{ij}$ is a classic weighting factor, used to equalize the contributions to the total sum from the different edges ($w_{ij} = 1/(d_{ij}^2)$) .
+where $l_{ij}$ is the overlap factor and $w_{ij}$ is a classic weighting factor, used to equalize the contributions to the total sum from the different edges.
 
-But there are some situations where keeping $f_{ij}$ is not a good idea (see figure) % faire un dessin d'apres l'article
+But there are some situations where keeping $l_{ij}$ is not a good idea (see figure) % faire un dessin d'apres l'article
 
 We thus want to avoid removing the "big" overlaps in one iteration only.
-So we have to replace $f_{ij}$ by $\min(f_{ij},s)$, where $s > 1$ will be a limiting factor. The authors found that $s = 1.5$ worked well.
+So we have to replace $l_{ij}$ by $\min(l_{ij},s)$, where $s > 1$ will be a limiting factor. The authors found that $s = 1.5$ worked well.
+
+We now want to minimize :
+
+\[ \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - \min(l_{ij},s))^2\]
 
 This type of sum is called a "stress function", in analogy with the well studied \emph{stress model} introduced by Kruskal in \cite{Kr64} and applied to graph drawing by Kamada and Kawai in \cite{KK89}. 
 The above sum is called the \emph{proximity stress model}.
@@ -136,9 +143,9 @@ This first phase provides us with a new layout of the graph $G$, in which the no
 This layout may still contain overlaps. We must thus iterate the construction of the Delaunay triangulation, the computation of the overlap factors, the minimization of the proximity stress model and the move of the nodes until no more overlaps occur along the edges of the Delaunay triangulation of the graph.
 
 \bigskip
-The process of the first stage makes clear that no overlaps can appear : the distance between nodes can only be increasing. 
+The process of the first stage makes clear that no overlaps can appear : the distance between nodes can only be increasing and the proximity graph on which we are calculating, as a triangulation, is a rigid graph.
 
-But the authors do not explain formally the reason of the termination of this phase : the stress function could always be smaller but never reach a local minimum.
+But the authors do not explain formally the reason of the termination of this phase : the stress function could always be smaller but never reach a local minimum. Moreover, the number of iterations needed during the first phase is not explicited or bounded in the article.
 
 The author's implementation of PRISM contains a threshold : if the gain in the minimization of the stress function is smaller, the first phase of the algorithm ends.
 
@@ -146,8 +153,25 @@ The author's implementation of PRISM contains a threshold : if the gain in the m
 
 \subsection{Overlap removal between non-near nodes}
 
-Why do we need a second stage ?
+The first step removes the overlap between ends of edges of the Delaunay triangulation of the graph. But some overlaps can be caused by nodes not being near, and thus not generating an edge in the proximity graph. These overlaps can not have been removed by the first stage of the PRISM algorithm.
+
+To find these still overlaping nodes, we have to use a scan-line algorithm.
+% mettre VPSC dans la biblio
 \subsubsection{Scan-line algorithm}
+
+A scan-line algorithm is a algorithm which will consider all the points of a layout.
+
+We can not use a algorithm which uses the graph properties because the vertices do not know the positions of the others vertices, so we can not find the overlaps by using the vertices properties.
+
+For all the ordinate's points we consider all the points in the abscissa. If there is an overlap at a point, we add the edge (between the two vertices overlapping) in the Delaunay triangulation. 
+% à etoffer
+
+
+\bigskip
+It is interesting to note that one of the opponent algorithms, VPSC, only uses a scan-line algorithm to remove all overlaps (mettre lien)
+
+\subsubsection{Overlap removal}
+
 
 \bigskip
 \begin{algorithm}[H]
@@ -179,11 +203,20 @@ Why do we need a second stage ?
 \subsection{Dissimilarity metrics}
 
 \subsubsection{Area}
+As said before, it is easy to remove all the overlaps by increase all the edges. But the final layout can be extremely large and unreadable, so we want a area as small as possible.
+
 \subsubsection{Edge length ratio}
+We calculate the ratio between the edge length of the original layout and the final one. 
+This metrics has to be as small as possible to minimaze the di
 \subsubsection{Vertices displacement}
+
+
+$\rightarrow$ expliquer comment on fait : matrice de rotation, translation, ajoustement de taille, addition de tout ça
 
 \section{Complexity}
 
+
+$\rightarrow$ comparaison avec VPSC
 \chapter{Implementation within Tulip}
 
 \section{Tulip framework}
@@ -202,7 +235,9 @@ Too many dependencies in GraphViz
 
 Use of Eigen possible ?
 \subsubsection{Newton-Raphson method - Kamada \& Kawai}
-Implementation done ?
+Implementation done
+
+Tests and time
 \section{Scan-line algorithm}
 Implementation details
 \chapter{Tests and results}
