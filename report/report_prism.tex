@@ -74,7 +74,17 @@ More details about the force-directed drawing algorithms can be found in \cite{K
 \bigskip
 The second possibility is to remove overlaps after the graph is drawn : these are post-processing algorithms.
 
-The Voronoi cluster busting algorithm \cite{Gansner98} restrains the possible displacement of a node with the use of Voronoi cells. This restriction aims to help preserving the relative positions of the nodes. In practice, the algorithm often requires a lot of iterations and the global similarity with the initial layout can be low. %(mettre exemples)
+The Voronoi cluster busting algorithm \cite{Gansner98} restrains the possible displacement of a node with the use of Voronoi cells. This restriction aims to help preserving the relative positions of the nodes. In practice, the algorithm often requires a lot of iterations and the global similarity with the initial layout can be low (see for example the figure \ref{voronoi}).
+
+\begin{figure}[h]
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.425\textwidth]{figures/size.png}}
+  \fbox{\includegraphics[width=0.45\textwidth]{figures/sizeVoro.png}}
+  \caption{(left) The initial layout. (right) The result of the Voronoi-based algorithm}
+  \label{voronoi}
+\end{figure}
+%% modifier image ?
 
 The Satisfy\_VPSC algorithm \cite{VPSC06}, solving the "variable placements with separation constraints" problem, moves iteratively the nodes in the horizontal and in the vertical dimensions. This algorithm aims to minimize the vertices displacement but can generate layouts that are very dissimilar to the initial layout. %(mettre exemples)
 
@@ -93,11 +103,11 @@ Our project consists in understanding the algorithm PRISM proposed by Gansner an
 
 \section{Formal notations}
 
-We use the followind notations : $G = (V,E)$ denotes the current graph, with $V$ the set of vertices (or nodes), and $E$ the set of edges. The number of vertices and of edges are denoted respectively $|V|$ (or $n$) and $|E|$.
+We use the following notations : $G = (V,E)$ denotes the current graph, with $V$ the set of vertices (or nodes), and $E$ the set of edges. The number of vertices and of edges are denoted respectively $|V|$ (or $n$) and $|E|$.
 
 An edge between two vertices $i$ and $j$ is denoted $(i,j)$.
 
-The position of a node $i$ in a layout is represented as a set of 2D coordinates $p_i = (x_i, y_i)$. The initial layout position is denoted as $p_i^0 = (x_i^0, y_i^0)$.
+The position of a node $i$ in a layout is represented as a set of 2D coordinates $p_i = (x_i, y_i)$. The initial layout position of $i$ is denoted as $p_i^0 = (x_i^0, y_i^0)$.
 
 We consider for the PRISM algorithm that a node $i$ has a certain width $w_i$ and height $h_i$, thus forming a rectangle containing the label, likely to cause overlaps.
 
@@ -118,6 +128,16 @@ A \emph{proximity graph} is a graph in which two vertices are connected by an ed
 \bigskip
 
 The \emph{Delaunay triangulation} (DT) (named after the work of Delaunay \cite{Delaunay34}) of a graph $G$ is a triangulation of the graph such that none of the circumscribed circles of the triangles in DT(G) contains a vertex on the inside. This particular triangulation also maximises the minimum angle of the triangles found.
+
+\begin{figure}[h]
+	\center
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.5\textwidth]{figures/DT.png}}
+  \caption{(left) A graph $G$. (right) The Delaunay triangulation of $G$}
+  \label{DT}
+\end{figure}
+%% modifier image ?
 
 The Delaunay triangulation of $G$, as a triangulation, is also a planar graph, and has thus at most $3n -6$ edges (if $|V(G)| = n$), which is a very practical parameter for the algorithm.
 
@@ -141,9 +161,18 @@ In order to do that, we calculate an \emph{overlap factor} $f_{ij}$ for each edg
 where $(x_i,y_i)$ are the coordinates of vertex $i$, $w_i$ its width and $h_i$ its height.
 
 If two nodes $i$ and $j$ have no overlap, then $f_{ij} = 1$. 
-If $i$ and $j$ do overlap, then that overlap can be removed by expanding the edge $(i,j)$ by the overlap factor found $f_{ij}$. %% Ajouter figure
+If $i$ and $j$ do overlap, then that overlap can be removed by expanding the edge $(i,j)$ by the overlap factor found $f_{ij}$ (see figure \ref{overlapFactor}). 
 
-\bigskip
+\begin{figure}[h]
+	\center
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.5\textwidth]{figures/FacteurChevauchement.png}}
+  \caption{Overlap factor}
+  \label{overlapFactor}
+\end{figure}
+%% modifier image ?
+
 Thus, the "ideal length" of an edge of the Delaunay triangulation is $l_{ij} = f_{ij}||p_i^0 - p_j^0||$, where $p_i^0$ is the initial set of coordinates of a node $i$.
 
 We now want to find coordinates for the nodes of the initial graph such that the edges length in $DT(G)$ are close to their ideal length.
@@ -156,7 +185,17 @@ Finding this new set of coordinates means minimizing the following sum :
 
 where $l_{ij}$ is the overlap factor and $w_{ij}$ is a classic weighting factor, used to equalize the contributions to the total sum from the different edges.
 
-But there are some situations where keeping $l_{ij}$ is not a good idea (see figure) % faire un dessin d'apres l'article
+But there are some situations where keeping $l_{ij}$ is not a good idea (see figure \ref{badcase}).
+
+\begin{figure}[h]
+	\center
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.5\textwidth]{figures/graphTulip0.png}}
+  \caption{A bad case}
+  \label{badcase}
+\end{figure}
+%% modifier image !
 
 We thus want to avoid removing the "big" overlaps in one iteration only.
 So we have to replace $f_{ij}$ by $\min(f_{ij},s)$, where $s > 1$ will be a limiting factor. The authors found that $s = 1.5$ worked well.
@@ -186,7 +225,7 @@ The authors' implementation of PRISM contains a threshold : if the gain in the m
 The first step removes the overlap between ends of edges of the Delaunay triangulation of the graph. But some overlaps can be caused by nodes not being near, and thus not generating an edge in the proximity graph. These overlaps can not have been removed by the first stage of the PRISM algorithm.
 
 To find these still overlapping nodes, we have to use a scan-line algorithm.
-% mettre VPSC dans la biblio
+
 \subsubsection{Scan-line algorithm}
 
 A scan-line algorithm is an algorithm which will consider all the points of a layout.
@@ -198,7 +237,7 @@ For all the ordinate's points we consider all the points in the abscissa. If the
 
 
 \bigskip
-It is interesting to note that one of the opponent algorithms, Satisfy\_VPSC \cite{VPSC06}, only uses a scan-line algorithm to remove all overlaps.
+It is interesting to note that one of the opponent algorithms, Satisfy\_VPSC \cite{VPSC06}, mainly uses a scan-line algorithm to remove overlaps.
 
 \subsubsection{Overlap removal}
 
@@ -207,7 +246,7 @@ The second stage uses the same processus as the first one, only adding the overl
 This stage ends when no more overlaps are found by the scan-line algorithm.
 % A completer ?
 
-\bigskip
+\begin{figure}
 \begin{algorithm}[H]
 \caption{PRISM}
 \KwIn{$p_i^0$ : coordinates of each vertex  \\
@@ -233,6 +272,8 @@ This stage ends when no more overlaps are found by the scan-line algorithm.
 }	
 (no more overlaps found by the scan-line algorithm)
 \end{algorithm}
+\caption{The PRISM algorithm}
+\end{figure}
 
 \subsection{Dissimilarity metrics}
 
@@ -268,7 +309,16 @@ The PRISM algorithm considers that the label is part of the node, and that the s
 
 But in Tulip, the labels are seen as a "property" of the graph, and are decorrelated from the nodes themselves. They generally are dynamic sized, and displayed in order to avoid overlaps. We thus do not have access to the size of labels.
 
-The solution was to increase the size of the nodes and to force the labels inside them (see figure). Thus, we could considerate that the "labels" were overlapping, even if it was artificially.
+The solution was to increase the size of the nodes and to force the labels inside them (see figure \ref{graphTulip}). Thus, we could considerate that the "labels" were overlapping, even if it was artificially.
+
+\begin{figure}[h]
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.5\textwidth]{figures/graphTulip0.png}}
+  \fbox{\includegraphics[width=0.5\textwidth]{figures/graphTulipWithLabels0.png}}
+  \caption{Adjustment of the nodes size in Tulip}
+  \label{graphTulip}
+\end{figure}
 
 \section{Resolution of the stress model}
 \subsubsection{Stress majorization}
