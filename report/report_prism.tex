@@ -36,9 +36,11 @@
 \tableofcontents
 \newpage
 
+
 \begin{abstract}
 Abstract..
 \end{abstract}
+
 
 \chapter{Subject presentation and state of the art}
 
@@ -108,6 +110,7 @@ Our project consists in understanding the algorithm PRISM proposed by Gansner an
 
 % Bien expliquer pourquoi on veut garder les relations de proximité
 
+% Bien expliquer pourquoi on veut garder les relations de proximité
 
 
 \chapter{PRISM algorithm}
@@ -137,6 +140,7 @@ To find easily the overlaps between near nodes of the graph $G$, it will efficie
 A \emph{proximity graph} is a graph in which two vertices are connected by an edge if (and only if) they satisfy a given geometrical property (a survey on proximity graphs can be found in \cite{JT92}).
 
 \bigskip
+
 
 The \emph{Delaunay triangulation} (DT) (named after the work of Delaunay \cite{Delaunay34}) of a graph $G$ is a triangulation of the graph such that none of the circumscribed circles of the triangles in DT(G) contains a vertex on the inside. This particular triangulation also maximises the minimum angle of the triangles found.
 
@@ -195,6 +199,7 @@ Finding this new set of coordinates means minimizing the following sum :
 \[ E = \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2\]
 
 where $l_{ij}$ is the overlap factor and $w_{ij} = 1/(l_{ij})^2$ is a classic weighting factor, used to equalize the contributions to the total sum from the different edges.
+
 
 But there are some situations where keeping $l_{ij}$ is not a good idea (see figure \ref{badcase}).
 
@@ -391,7 +396,47 @@ The $(\delta x, \delta y)$ found are added to the current position of the node $
 The algorithm stops when all considered nodes have reached $\Delta_i < \varepsilon$. As $\varepsilon \neq 0$, it happens that all nodes have not been removed.
 
 \section{Scan-line algorithm}
-Implementation details
+As we want to find the remaining overlap, the scan-line algorithme has to considere all the point of the image's graph. But we find a implemeted class in Tulip, BoundingBox, which will help us to make a fast scan-line algorithm.\\
+We encompass all the nodes in a BoundingBox so we can use a theirs properties : instead of iterate over all the points of the image, we use the lowest and the highest point. 
+% vérifier que ça veut bien dire une bb par point !
+\bigskip
+In a first step, we sort the BoundingBox by their lowest point in the abscissa. In that way, if the BoundingBox b1 is sorted before the BoundingBox b2, and if the highest point of b1 is higher than the lowest point of b2, it means that there is probably an overlap in the graph between b1 and b2. \\
+Contrarilly, if the highest point of b1 is lower than the lowest point of b2, all the BoundingBox sorted after b1 can not overlap b1.\\
+This algorithm return the edge of the overlaps that we will had in the Delaunay triangulation.
+ %image
+
+
+
+\begin{figure}
+\begin{algorithm}[H]
+\caption{Scanline}
+\KwIn{list of BoundingBox}
+Initialize a listOfBoxes
+Sort the boxes by the lower point
+\For{all boxes from 0 to lenght-2}
+	{\While{there is a overlap with the next box}
+		\If{there is a real overlap}
+			{add the edge between this boxes in the listOfBoxes}
+		box = next box}
+\KwRet{listOfBoxes}
+\end{algorithm}
+\caption{Scan-Line Algorithm}
+\end{figure}
+
+\begin{figure}[h]
+  \center
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.5\textwidth]{figures/BoundingBoxes.png}}
+  \caption{Scan-line on BoundingBox}
+  \label{badcase}
+\end{figure}
+
+In the above image an exemple of the scan-line algorithm. We have colored in red the graph and in green the sorted BundingBox in the abscissa. \\
+We can see a lot of overlap in the green part. The boxes b'2 and b'3 overlap in the abscissa and in the graph. But the boxes b'1 and b'2 overlap in the abscissa and don't overlap in the graph, this is resolve by the line 5 in a check in the graph (we use the method BoundingBox.contains(BoundingBox)). \\
+Morover, the boxes b'1 and b'3 don't overlap in the abscissa, so none of the boxes higher that b3 can overlap with b1.
+
+% vérifier la ligne !!!
 
 \section{Tests and results}
 Tests and time of the Kamada and Kawai solution
