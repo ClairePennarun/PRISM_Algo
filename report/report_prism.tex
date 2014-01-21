@@ -304,7 +304,7 @@ We first calculate the ratio between the edge lengths of the proximity graphs of
 
 This metric has to be as small as possible to minimize the changes made to the edges length during the algorithm.
 
-The edge length ratio has to be calculated on a rigid graph (as the Delaunay triangulations) to be meaningful : two layouts of the same graph can be completely different if the graph is not rigid. (exemple ?)
+The edge length ratio has to be calculated on a rigid graph (as the Delaunay triangulations) to be meaningful : two layouts of the same graph can be completely different if the graph is not rigid.
 
 \subsubsection{Vertices displacement}
 
@@ -391,19 +391,49 @@ At each iteration, the node moved is the one having the largest value of $\Delta
 
 \[\Delta_i = \sqrt{\left(\frac{\delta E}{\delta x_i}\right)^2 + \left(\frac{\delta E}{\delta y_i}\right)^2} \]
 
-
 \bigskip
 We thus only have to solve a two-equations system at each step (the two unknown values are $\delta x$ and $\delta y$):
-\begin{eqnarray*}
+\begin{eqnarray}
+\label{eq1}
 \frac{\delta^2 E}{\delta x_i^2}(p_i) \times \delta x +  \frac{\delta^2 E}{\delta x_i \delta y_i}(p_i) \times \delta y  & = & - \frac{\delta E}{\delta x_i} (p_i) \\
 \frac{\delta^2 E}{\delta y_i \delta x_i}(p_i) \times \delta x +  \frac{\delta^2 E}{\delta y_i^2}(p_i) \times \delta y & = & - \frac{\delta E}{\delta y_i} (p_i)
-\end{eqnarray*}
+\label{eq2}
+\end{eqnarray}
 
 The $(\delta x, \delta y)$ found are added to the current position of the node $i$, and this is done iteratively until $\Delta_i < \varepsilon$, where $\varepsilon$ is a threshold determined by the user.
 
 The algorithm stops when all considered nodes have reached $\Delta_i < \varepsilon$. As $\varepsilon \neq 0$, it happens that all nodes have not been removed.
 
+\begin{figure}
+\begin{algorithm}[H]
+\caption{Kamada-like algorithm}
+\For {all edges $(i,j)$ of the Delaunay triangulation}
+{Compute $l_{ij}$}
+
+\For {all nodes $i$ of the graph}
+{Compute $\delta E / \delta x_i$, $\delta E / \delta y_i$ and $Delta_i$}
+
+\While{($\Delta_m = \max_i(\Delta_i)) > \varepsilon$}{
+	\While{$\Delta_m > \varepsilon$}
+	{
+	$(\delta x, \delta y)$ = solutions of the \ref{eq1} and \ref{eq2} equations
+	
+	$x_m += \delta x$
+	
+	$y_m += \delta y$
+	
+	Compute $\Delta_m$
+	}
+}
+
+\end{algorithm}
+\caption{A Kamada-like algorithm to solve the proximity stress model}
+\label{algkamada}
+\end{figure}
+
 \subsubsection{Complexity}
+
+
 
 \section{Finding the remaining overlaps}
 As we want to find the remaining overlaps, a scan-line algorithm has generally to consider all the points of the graph layout. But we found a implemented class in Tulip, \texttt{BoundingBox}, which helped us to implement a good non-naive algorithm. 
@@ -449,15 +479,15 @@ Sort the boxes by their lower point
   \label{scanline}
 \end{figure}
 
-In the figure \ref{scanline} we show an exemple of our algorithm \ref{scanline}. We have colored in red the graph and in green the list of bounding boxes sorted by abscissa. 
+In the figure \ref{scanline} we show an exemple of our algorithm \ref{algscanline}. We have colored the graph in red and the list of bounding boxes sorted by abscissa in green. 
 
 We can see a lot of overlaps in the green part. The boxes $b'2$ and $b'3$ do overlap in the abscissa and in the graph. But the boxes $b'1$ and $b'2$ overlap in the abscissa and don't overlap in the graph, this is resolved by the line 5 of the algorithm by a check in the graph (we use the method \texttt{BoundingBox.contains(BoundingBox)}).
 
-Moreover, the boxes $b'1$ and $b'3$ do not overlap in the abscissa, so none of the boxes higher that $b3$ can overlap with $b1$.
+Moreover, the boxes $b'1$ and $b'3$ do not overlap in the abscissa, so none of the boxes higher that $b3$ could overlap with $b1$.
 
 \subsection{Complexity}
 
-$n^2$
+As this algorithm is mainly based on the traversal of the BoundingBox list, its complexity is in $O(n^2)$, where $n$ is the number of nodes in the layout (and thus, the number of bounding boxes in the list). 
 
 \section{Tests and results}
 Tests and time of the Kamada and Kawai solution
@@ -473,7 +503,7 @@ Since PRISM :
 ePRISM : PRISM on overlap of edges \cite{Hu09}
 
 \appendix
-\chapter{Python script}
+\chapter{Python script to find the dependancies of the \texttt{post\_process.c} file in GraphViz}
 
 \begin{verbatim}
 #! bin/python
