@@ -181,9 +181,9 @@ We now want to find coordinates for the nodes of the initial graph such that the
 
 Finding this new set of coordinates means minimizing the following sum :
 
-\[ \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2\]
+\[ E = \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2\]
 
-where $l_{ij}$ is the overlap factor and $w_{ij}$ is a classic weighting factor, used to equalize the contributions to the total sum from the different edges.
+where $l_{ij}$ is the overlap factor and $w_{ij} = 1/(l_{ij})^2$ is a classic weighting factor, used to equalize the contributions to the total sum from the different edges.
 
 But there are some situations where keeping $l_{ij}$ is not a good idea (see figure \ref{badcase}).
 
@@ -321,14 +321,62 @@ The solution was to increase the size of the nodes and to force the labels insid
 \end{figure}
 
 \section{Resolution of the stress model}
+
+The resolution of the proximity stress model can be done in many different ways. The authors, through their implementation in GraphViz \cite{Gansner02}, a set of graph drawing tools, chose to solve it via a stress majorization technique (described in details in \cite{Gansner05}). 
+
 \subsubsection{Stress majorization}
-Not possible natively in Tulip
 
-Too many dependencies in GraphViz (python script)
+We first considered to implement the resolution of the proximity stress model in the same way as the authors by employing a stress majorization technique.
 
-Use of Eigen possible ?
+This procedure consists in bounding the function we want to optimize by a series of quadratic functions from above. Solving the stress model means then finding an optimum, which is done by solving a series of linear systems.
+
+\bigskip
+This resolution implies the manipulation of weighted Laplacian of matrices and the use of a conjugate gradient algorithm with preconditions. These features are not present in the Tulip framework and were too complex to implement in the given time for the project. 
+
+\bigskip
+Another possibility was to retrieve some implementation from the GraphViz suite and use it as an external plugin or module. 
+But a analysis of the dependencies of the requested function (the \texttt{StressMajorizationSmoother\_smooth()} function in the \texttt{post\_process.c} file) were to important to do so.
+
+The python script used to retrieve these dependancies is given as an annex (mettre ref)
+
+\bigskip
+We then focused on finding an other resolution method for the proximity stress model and we decided to adapt an algorithm based on a Newton-Raphson method.
+
 \subsubsection{Newton-Raphson method - Kamada \& Kawai}
-Implementation done : pseudo-code, explications
+
+Kamada and Kawai \cite{Kamada89} proposed an algorithm computing a local minimum of the energy $E$ of a system. We adapted and implemented it by using 
+\[ E = \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2 \]
+The purpose is to calculate new positions $p_i = (x_i, y_i)$ for $i = 1... n$, locally minimizing the global stress function $E$. 
+
+We thus want to find $x_i, y_i$ such that $\delta E / \delta x_i = \delta E / \delta y_i = 0$ for $i = 1... n$. That means solving simultaneously $2n$ (non-linear) equations.
+
+\bigskip
+The Kamada and Kawai algorithm consists in moving only one node $i$ at a time to reach $\delta E / \delta x_i = \delta E / \delta y_i = 0$, "freezing" the other nodes during the computation.
+
+We adapted the computation of $\delta E / \delta x_i$ and $\delta E / \delta y_i$ to our configuration : we considered the following values :
+
+\begin{eqnarray*}
+\frac{\delta^2 E}{\delta x_i}  & = & \sum_{(i,m) \in E(DT)} w_{im} ( (x_m - x_i) - \frac{l_{im} (x_m - x_i)}{||p_m - p_i||} \\
+\frac{\delta^2 E}{\delta y_i}  & = & \sum_{(i,m) \in E(DT)} w_{im} ( (y_m - y_i) - \frac{l_{im} (y_m - y_i)}{||p_m - p_i||}
+\end{eqnarray*}
+ 
+where $DT$ is the Delaunay triangulation of the graph, $l_{im}$ is the ideal length of the $(i,m)$ edge, $w_{im} = 1/(l_{im})^2 $ is a weighting factor, and $||p_m - p_i||$ is the euclidian distance between the nodes $m$ and $i$.
+
+At each iteration, the node moved is the one having the largest value of $\Delta_i$ (i.e. the "further" one of the condition to reach):
+
+\[\Delta_i = \sqrt{\left(\frac{\delta E}{\delta x_i}\right)^2 + \left(\frac{\delta E}{\delta y_i}\right)^2} \]
+
+
+\bigskip
+We thus only have to solve a two-equations system at each step (the two unknown values are $\delta x$ and $\delta y$):
+\begin{eqnarray*}
+\frac{\delta^2 E}{\delta x_i^2}(p_i) \times \delta x +  \frac{\delta^2 E}{\delta x_i \delta y_i}(p_i) \times \delta y  & = & - \frac{\delta E}{\delta x_i} (p_i) \\
+\frac{\delta^2 E}{\delta y_i \delta x_i}(p_i) \times \delta x +  \frac{\delta^2 E}{\delta y_i^2}(p_i) \times \delta y & = & - \frac{\delta E}{\delta y_i} (p_i)
+\end{eqnarray*}
+
+The $(\delta x, \delta y)$ found are added to the current position of the node $i$, and this is done iteratively until $\Delta_i < \varepsilon$, where $\varepsilon$ is a threshold determined by the user.
+
+The algorithm stops when all considered nodes have reached $\Delta_i < \varepsilon$. As $\varepsilon \neq 0$, it happens that all nodes have not been removed.
 
 \section{Scan-line algorithm}
 Implementation details
