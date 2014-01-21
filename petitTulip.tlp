@@ -1,0 +1,100 @@
+(tlp "2.3"
+(date "01-19-2014")
+(comments "")
+(nb_nodes 5)
+;(nodes <node_id> <node_id> ...)
+(nodes 0..4)
+(nb_edges 8)
+;(edge <edge_id> <source_id> <target_id>)
+(edge 0 0 0)
+(edge 1 0 2)
+(edge 2 1 3)
+(edge 3 2 4)
+(edge 4 3 1)
+(edge 5 3 3)
+(edge 6 3 4)
+(edge 7 4 2)
+(property  0 color "viewBorderColor"
+(default "(0,0,0,255)" "(0,0,0,255)")
+)
+(property  0 double "viewBorderWidth"
+(default "0" "1")
+)
+(property  0 color "viewColor"
+(default "(255,95,95,255)" "(180,180,180,255)")
+)
+(property  0 string "viewFont"
+(default "TulipBitmapDir/font.ttf" "TulipBitmapDir/font.ttf")
+)
+(property  0 int "viewFontSize"
+(default "18" "18")
+)
+(property  0 string "viewLabel"
+(default "TulipPython" "")
+)
+(property  0 color "viewLabelBorderColor"
+(default "(0,0,0,255)" "(0,0,0,255)")
+)
+(property  0 double "viewLabelBorderWidth"
+(default "1" "1")
+)
+(property  0 color "viewLabelColor"
+(default "(54,54,54,255)" "(54,54,54,255)")
+)
+(property  0 int "viewLabelPosition"
+(default "0" "0")
+)
+(property  0 layout "viewLayout"
+(default "(0,0,0)" "()")
+(node 0 "(658.54,586.14,0)")
+(node 1 "(911,697,0)")
+(node 2 "(742.929,575.485,0)")
+(node 3 "(700.797,670.757,0)")
+(node 4 "(860.581,707.854,0)")
+)
+(property  0 graph "viewMetaGraph"
+(default "" "()")
+)
+(property  0 double "viewMetric"
+(default "0" "0")
+)
+(property  0 double "viewRotation"
+(default "0" "0")
+)
+(property  0 bool "viewSelection"
+(default "false" "false")
+(node 4 "true")
+(edge 3 "true")
+(edge 6 "true")
+(edge 7 "true")
+)
+(property  0 int "viewShape"
+(default "14" "0")
+)
+(property  0 size "viewSize"
+(default "(1,1,1)" "(0.125,0.125,0.5)")
+(node 2 "(0.263541,1,1)")
+(edge 1 "(0.0329426,0.125,0.5)")
+(edge 3 "(0.0329426,0.125,0.5)")
+(edge 7 "(0.0329426,0.125,0.5)")
+)
+(property  0 int "viewSrcAnchorShape"
+(default "0" "-1")
+)
+(property  0 size "viewSrcAnchorSize"
+(default "(1,1,0)" "(1,1,0)")
+)
+(property  0 string "viewTexture"
+(default "" "")
+)
+(property  0 int "viewTgtAnchorShape"
+(default "0" "50")
+)
+(property  0 size "viewTgtAnchorSize"
+(default "(1,1,0)" "(1,1,0)")
+)
+(graph_attributes 0 
+(string "name" "Random General Graph - 'nodes'=5 'edges'=9 ")
+(string "file" "/home/claire/Documents/fac/cours/master/semestre9/PER/essai_FILES/PRISM_Algo/petitTulip.tlp")
+)
+)
