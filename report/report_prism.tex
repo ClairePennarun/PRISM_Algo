@@ -396,31 +396,35 @@ The $(\delta x, \delta y)$ found are added to the current position of the node $
 The algorithm stops when all considered nodes have reached $\Delta_i < \varepsilon$. As $\varepsilon \neq 0$, it happens that all nodes have not been removed.
 
 \section{Scan-line algorithm}
-As we want to find the remaining overlap, the scan-line algorithme has to considere all the point of the image's graph. But we find a implemeted class in Tulip, BoundingBox, which will help us to make a fast scan-line algorithm.\\
-We encompass all the nodes in a BoundingBox so we can use a theirs properties : instead of iterate over all the points of the image, we use the lowest and the highest point. 
-% vérifier que ça veut bien dire une bb par point !
+As we want to find the remaining overlaps, the scan-line algorithm has to consider all the points of the graph layout. But we found a implemented class in Tulip, \texttt{BoundingBox}, which helped us to make a fast scan-line algorithm. In Tulip, each bounding box is represented by two points : the lowest and leftest point and the highest and rightest point of the bounding box.
+
+We encompass each node in a BoundingBox so we can use its properties : instead of iterating over all the points of the image, we only use the lowest and the highest points of each BoundingBox. 
+
 \bigskip
-In a first step, we sort the BoundingBox by their lowest point in the abscissa. In that way, if the BoundingBox b1 is sorted before the BoundingBox b2, and if the highest point of b1 is higher than the lowest point of b2, it means that there is probably an overlap in the graph between b1 and b2. \\
-Contrarilly, if the highest point of b1 is lower than the lowest point of b2, all the BoundingBox sorted after b1 can not overlap b1.\\
-This algorithm return the edge of the overlaps that we will had in the Delaunay triangulation.
- %image
+In a first step, we sort the BoundingBox by their lowest point in the abscissa. Thus, if the BoundingBox $b1$ is placed before the BoundingBox $b2$ in the sorted list, and if the highest point of $b1$ is higher than the lowest point of $b2$, that means that there may be an overlap in the graph between $b1$ and $b2$. 
 
+In the contrary, if the highest point of $b1$ is lower than the lowest point of $b2$, all the BoundingBox sorted after $b1$ can not cause an overlap with $b1$.
 
+\bigskip
+This algorithm returns the edges of the overlaps, which we will add in the Delaunay triangulation.
 
 \begin{figure}
 \begin{algorithm}[H]
-\caption{Scanline}
+\caption{Scan-line}
 \KwIn{list of BoundingBox}
 Initialize a listOfBoxes
-Sort the boxes by the lower point
-\For{all boxes from 0 to lenght-2}
-	{\While{there is a overlap with the next box}
-		\If{there is a real overlap}
+
+Sort the boxes by their lower point
+
+\For{all boxes from 0 to length-2}
+	{\While{there is a overlap with the next box in the list}{
+		\If{there is a real overlap in the graph}
 			{add the edge between this boxes in the listOfBoxes}
-		box = next box}
+		box = next box}}
 \KwRet{listOfBoxes}
 \end{algorithm}
 \caption{Scan-Line Algorithm}
+\label{algscanline}
 \end{figure}
 
 \begin{figure}[h]
@@ -429,14 +433,14 @@ Sort the boxes by the lower point
   \setlength\fboxrule{0.5pt}
   \fbox{\includegraphics[width=0.5\textwidth]{figures/BoundingBoxes.png}}
   \caption{Scan-line on BoundingBox}
-  \label{badcase}
+  \label{scanline}
 \end{figure}
 
-In the above image an exemple of the scan-line algorithm. We have colored in red the graph and in green the sorted BundingBox in the abscissa. \\
-We can see a lot of overlap in the green part. The boxes b'2 and b'3 overlap in the abscissa and in the graph. But the boxes b'1 and b'2 overlap in the abscissa and don't overlap in the graph, this is resolve by the line 5 in a check in the graph (we use the method BoundingBox.contains(BoundingBox)). \\
-Morover, the boxes b'1 and b'3 don't overlap in the abscissa, so none of the boxes higher that b3 can overlap with b1.
+In the figure \ref{scanline} we show an exemple of our scan-line algorithm \ref{scanline}. We have colored in red the graph and in green the list of bounding boxes sorted by abscissa. 
 
-% vérifier la ligne !!!
+We can see a lot of overlaps in the green part. The boxes $b'2$ and $b'3$ do overlap in the abscissa and in the graph. But the boxes $b'1$ and $b'2$ overlap in the abscissa and don't overlap in the graph, this is resolved by the line 5 of the algorithm by a check in the graph (we use the method \texttt{BoundingBox.contains(BoundingBox)}).
+
+Moreover, the boxes $b'1$ and $b'3$ do not overlap in the abscissa, so none of the boxes higher that $b3$ can overlap with $b1$.
 
 \section{Tests and results}
 Tests and time of the Kamada and Kawai solution
