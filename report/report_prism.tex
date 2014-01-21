@@ -86,9 +86,18 @@ The Voronoi cluster busting algorithm \cite{Gansner98} restrains the possible di
   \caption{(left) The initial layout. (right) The result of the Voronoi-based algorithm}
   \label{voronoi}
 \end{figure}
-%% modifier image ?
 
-The Satisfy\_VPSC algorithm \cite{VPSC06}, solving the "variable placements with separation constraints" problem, moves iteratively the nodes in the horizontal and in the vertical dimensions. This algorithm aims to minimize the vertices displacement but can generate layouts that are very dissimilar to the initial layout. %(mettre exemples)
+The Satisfy\_VPSC algorithm \cite{VPSC06}, solving the "variable placements with separation constraints" problem, moves iteratively the nodes in the horizontal and in the vertical dimensions. This algorithm aims to minimize the vertices displacement but can generate layouts that are very dissimilar to the initial layout (see figure \ref{vpsc}).
+
+\begin{figure}[h]
+	\center
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.3\textwidth]{figures/vpsc1.png}}
+  \fbox{\includegraphics[width=0.2\textwidth]{figures/vpsc2.png}}
+  \caption{(left) The initial layouts. (right) The results of the Solve\_VPSC algorithm}
+  \label{vpsc}
+\end{figure}
 
 Some work on word cloud generators like Wordle (\url{http://www.wordle.net/}) allowed to develop new algorithms like Mani-Wordle \cite{Koh10} and RWordle \cite{SSSK12} based on a spiral scheme for the random placement of text labels in order to overcome overlaps.
 
