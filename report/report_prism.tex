@@ -36,7 +36,9 @@
 \tableofcontents
 \newpage
 
-% abstract
+\begin{abstract}
+Abstract..
+\end{abstract}
 
 \chapter{Subject presentation and state of the art}
 
@@ -335,9 +337,10 @@ This resolution implies the manipulation of weighted Laplacian of matrices and t
 
 \bigskip
 Another possibility was to retrieve some implementation from the GraphViz suite and use it as an external plugin or module. 
-But a analysis of the dependencies of the requested function (the \texttt{StressMajorizationSmoother\_smooth()} function in the \texttt{post\_process.c} file) were to important to do so.
+But an analysis of the dependencies of the requested function (the \texttt{StressMajorizationSmoother\_smooth()} function in the \texttt{post\_process.c} file) were to important to do so.
 
-The python script used to retrieve these dependancies is given as an annex (mettre ref)
+We used a python script to retrieve the number of lines of the dependance files of \texttt{post\_process.c}. The script is given as an annex (mettre ref). We used the \texttt{-MM} option of \texttt{gcc} to generate the headers (.h files) necessary to the execution of the file, then searched for the .c files having the same name and count the number of lines. As a result, 16 of the 52 needed headers have a corresponding .c having the same name, and these 16 files have a total of 14033 lines.
+This was considered as a too large amount of code to use as an external plugin or module (and these are only the first level dependancies !).
 
 \bigskip
 We then focused on finding an other resolution method for the proximity stress model and we decided to adapt an algorithm based on a Newton-Raphson method.
@@ -390,7 +393,34 @@ Since PRISM :
 
 ePRISM : PRISM on overlap of edges \cite{Hu09}
 
+\appendix
+\chapter{Python script}
+
+\begin{verbatim}
+#! bin/python
+import os
+import os.path
+s = os.popen("gcc -MM post_process.c -I ../common/ -I ../gvc/ -I 
+../pathplan/ -I ../cdt/ -I ../sparse/ -I ../neatogen/ -I ../sfdpgen/ 
+-I ../cgraph/").read()
+s = s.split(' ',2)[2]
+s = s.replace(".h",".c")
+totalLineAmount = 0
+nbNotFoundFiles = 0
+nbFoundFiles = 0
+for f in s.split(' '):
+    if os.path.isfile(f):
+        cm = os.popen("wc -l " + f).read()
+        cm = cm.split(' ')[0]
+        totalLineAmount += int(cm)
+	nbFoundFiles += 1
+    else:
+        nbNotFoundFiles += 1
+print s, totalLineAmount, nbNotFoundFiles, nbFoundFiles
+\end{verbatim}
+
 \bibliographystyle{plain}
 \bibliography{report_prism}
+
 
 \end{document}
