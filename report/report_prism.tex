@@ -423,6 +423,20 @@ Sort the boxes by the lower point
 \caption{Scan-Line Algorithm}
 \end{figure}
 
+\begin{figure}[h]
+  \center
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.5\textwidth]{figures/BoundingBoxes.png}}
+  \caption{Scan-line on BoundingBox}
+  \label{badcase}
+\end{figure}
+
+In the above image an exemple of the scan-line algorithm. We have colored in red the graph and in green the sorted BundingBox in the abscissa. \\
+We can see a lot of overlap in the green part. The boxes b'2 and b'3 overlap in the abscissa and in the graph. But the boxes b'1 and b'2 overlap in the abscissa and don't overlap in the graph, this is resolve by the line 5 in a check in the graph (we use the method BoundingBox.contains(BoundingBox)). \\
+Morover, the boxes b'1 and b'3 don't overlap in the abscissa, so none of the boxes higher that b3 can overlap with b1.
+
+% vérifier la ligne !!!
 
 \section{Tests and results}
 Tests and time of the Kamada and Kawai solution
