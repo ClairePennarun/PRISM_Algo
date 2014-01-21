@@ -10,19 +10,43 @@ import time
 
 class Prism:
 
-	def applyToGraph(self,graph):
+	def applyToGraph(self,graph,epsilon):
 		self.graph = graph
 		self.createDelaunay()
 		nbOverlaps = self.computeOverlapFactors()
 		print nbOverlaps
 		changed = 1
+#		print "first phase"
 		while nbOverlaps > 0 and changed == 1:
-			changed = self.kamada()
+			changed = self.kamada(epsilon)
 			self.createDelaunay()
 			nbOverlaps = self.computeOverlapFactors()
-			print nbOverlaps
+#			print nbOverlaps
+		print nbOverlaps
+		changed = 1
+		graphCopy = tlp.newGraph()
+		tlp.copyToGraph(graphCopy,graph)
+		adjustNodesLabels(graphCopy)	
+		graphCopy.setName("first phase copy")
+		
+#		print "second phase"
+		self.createDelaunay()
 		self.computeBounding()
 		self.scanline()
+		nbOverlaps = self.computeOverlapFactors()
+		print nbOverlaps
+		while nbOverlaps > 0 and changed == 1:
+			changed = self.kamada(epsilon)
+			self.createDelaunay()
+			self.computeBounding()
+			self.scanline()
+			nbOverlaps = self.computeOverlapFactors()
+#			print nbOverlaps
+		print nbOverlaps
+		graphCopyFinal = tlp.newGraph()
+		tlp.copyToGraph(graphCopyFinal,graph)
+		adjustNodesLabels(graphCopyFinal)	
+		graphCopyFinal.setName("second phase copy")
 
 	def createDelaunay(self):
 		coords = [] # coordonnees des nodes de graph
@@ -105,11 +129,11 @@ class Prism:
 		y = (1/D)*(F - (C*E*D - B*C*F)/(A*D - B*C))
 		return [x,y]
 	
-	def kamada(self):
+	def kamada(self, epsilon):
 		hasChanged = 0
 #		print "debut kamada"
 		s = 1.5
-		eps = 0.0001
+		eps = epsilon
 		layoutPrty = self.viewLayout
 		newCoord = layoutPrty
 	
@@ -227,6 +251,7 @@ class Prism:
 			self.boundingBoxToNode[bb] = n
 			self.nodeToBoundingBox[n.id] = bb
 			self.boundingBox.append(bb)
+			self.graph.delSubGraph(subg)
 	
 	def scanline(self):
 		listOverlapEdges = []
@@ -241,14 +266,17 @@ class Prism:
 				if b.intersect(b2):
 					n1 = self.boundingBoxToNode[b]
 					n2 = self.boundingBoxToNode[b2]
-					overlapEdge = graph.existEdge(n1, n2)
-					listOverlapEdges.append(overlapEdge)
-					print n1, " ",n2
+#					overlapEdge = graph.existEdge(n1, n2)
+					listOverlapEdges.append((n1,n2))
+#					print n1, " ",n2
 				i+=1
 				b2 = self.boundingBox[i]
 			j+=1
 			b = self.boundingBox[j]
-		return listOverlapEdges
+		for (n,m) in listOverlapEdges:
+			self.delaunayEdges.append((n,m))
+			self.delaunayNeighbors.pushBackNodeEltValue(n,m.id)
+			self.delaunayNeighbors.pushBackNodeEltValue(m,n.id)
 
 def adjustNodesLabels(graph):
 	per = tlpgui.createView("Node Link Diagram view", graph)
@@ -315,21 +343,22 @@ def main(graph):
 	adjustNodesLabels(graphCopy)
 	adjustNodesLabels(graph)
 	graph.setName("initial")
+	graphCopy.setName("initial copy")
 	
-	# coordonnees de depart
-	for n in graph.getNodes():
-		print n, " ", viewLayout[n]
+#	# coordonnees de depart
+#	for n in graph.getNodes():
+#		print n, " ", viewLayout[n]
 	
 	# Algo
 	begin = time.time()
 	p = Prism()
-	p.applyToGraph(graph)
+	p.applyToGraph(graph,0.0001)
 	end = time.time()
 
-	# coordonnees de fin
-	for n in graph.getNodes():
-		print n, " ", viewLayout[n]
+#	# coordonnees de fin
+#	for n in graph.getNodes():
+#		print n, " ", viewLayout[n]
 	
 	print "temps : ", end-begin
 
-	adjustNodesLabels(graph)
+#	adjustNodesLabels(graph)
