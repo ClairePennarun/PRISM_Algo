@@ -59,7 +59,7 @@ We would like to thank M. Bruno Pinaud and M. Philippe Narbel for their interest
 %Partie "domaine general : graph drawing"
 A graph is a data structure encoding information with the use of nodes and edges (which are binary relations between nodes).
 
-Graph drawing aims to represent a given information as a graph, generally through a "node-link" layout, letting only nodes and edges be displayed. 
+Graph drawing aims to represent a given information as a graph, generally through a ``node-link" layout, letting only nodes and edges be displayed. 
 
 \bigskip
 %Partie "domaine specifique : node overlap + etat de l'art"
@@ -67,13 +67,13 @@ Most of the layout algorithms consider nodes as points, but some need to let app
 
 This could lead to an overlap of some nodes. That must be avoided, as it clearly confuses the understanding of the graph.
 
-Moreover, as we generally consider that the original layout contains significant information, an other parameter to deal with is to maintain the "global shape" of the initial representation. 
+Moreover, as we generally consider that the original layout contains significant information, an other parameter to deal with is to maintain the ``global shape" of the initial representation. 
 
-This "global shape" can be seen as "preserving the proximity relations between nodes", "preserving the orthogonal ordering of nodes"(see \cite{Mis95}) or "preserving the relative positions of nodes by limiting the vertices displacement"(see \cite{Gansner98}), and a choice between these criteria has to be made.
+This ``global shape" can be seen as ``preserving the proximity relations between nodes", ``preserving the orthogonal ordering of nodes"(see \cite{Mis95}) or ``preserving the relative positions of nodes by limiting the vertices displacement"(see \cite{Gansner98}), and a choice between these criteria has to be made.
 
-The easiest approach is to "scale" the layout until no overlaps occur. This method has the advantage to preserve the global shape of the layout, but the area of the graph can become very inconvenient. That is why a compromise between the preservation of the "shape of the graph" and a minimization of the total area has to be found.
+The easiest approach is to ``scale" the layout until no overlaps occur. This method has the advantage to preserve the global shape of the layout, but the area of the graph can become very inconvenient. That is why a compromise between the preservation of the ``shape of the graph" and a minimization of the total area has to be found.
 
-Different algorithms have been devised to answer the problem, each of them focusing on a different "global shape" definition. 
+Different algorithms have been devised to answer the problem, each of them focusing on a different ``global shape" definition. 
 
 \bigskip
 The first approach is to try to avoid overlaps while generating the layout.
@@ -81,7 +81,7 @@ The first approach is to try to avoid overlaps while generating the layout.
 The spring-electrical model presented by Eades \cite{Eades84} and Fruchterman and Reingold \cite{FR91} considers the edges as springs between nodes, so that the spring forces move the nodes to a minimal energy state of the global system. A repelling force between non-adjacent nodes is added.
 This model has been adapted by various authors (\cite{HK02}, \cite{Li05}) to take the node size into account, generally as increased repulsive forces.
 
-The stress model of Kamada and Kawai \cite{Kamada89} is based on the assumption that a graph layout is "good" if the distance between two vertices is close to the theoretical graph distance between these vertices, i.e. to the length of their shortest path. It can also be extended to avoid as much as possible overlap along the edges.
+The stress model of Kamada and Kawai \cite{Kamada89} is based on the assumption that a graph layout is ``good" if the distance between two vertices is close to the theoretical graph distance between these vertices, i.e. to the length of their shortest path. It can also be extended to avoid as much as possible overlap along the edges.
 
 These two models (spring-electrical model and stress model) try to avoid all overlaps, but use generally a post-processing algorithm to ensure the total overlap removal.
 
@@ -101,7 +101,7 @@ The Voronoi cluster busting algorithm \cite{Gansner98} restrains the possible di
   \label{voronoi}
 \end{figure}
 
-The Satisfy\_VPSC algorithm \cite{VPSC06}, solving the "variable placements with separation constraints" problem, moves iteratively the nodes in the horizontal and in the vertical dimensions. This algorithm aims to minimize the vertices displacement but can generate layouts that are very dissimilar to the initial layout (see figure \ref{vpsc}).
+The Satisfy\_VPSC algorithm \cite{VPSC06}, solving the ``variable placements with separation constraints" problem, moves iteratively the nodes in the horizontal and in the vertical dimensions. This algorithm aims to minimize the vertices displacement but can generate layouts that are very dissimilar to the initial layout (see figure \ref{vpsc}).
 
 \begin{figure}[h]
 	\center
@@ -136,7 +136,7 @@ We consider for the PRISM algorithm that a node $i$ has a certain width $w_i$ an
 
 \section{Description of the algorithm}
 
-The PRISM algorithm focuses on two main constraints for the final layout of the graph. First, the area taken by the layout must be minimal. The second constraint is to preserve the global "shape" of the original layout by maintaining all proximity relations between the nodes.
+The PRISM algorithm focuses on two main constraints for the final layout of the graph. First, the area taken by the layout must be minimal. The second constraint is to preserve the global ``shape" of the original layout by maintaining all proximity relations between the nodes.
 
 The PRISM algorithm runs in two main steps ; in a first step, it removes iteratively the overlaps between near nodes of the given graph $G$. Then it finds the non-near overlapping nodes and removes these overlaps as well.
 
@@ -170,7 +170,7 @@ In the PRISM algorithm, we consider that the near nodes in $G$ are connected by 
 Thus, the algorithm's first goal is to remove overlaps along the edges of the Delaunay triangulation of $G$.
 
 \subsubsection{Ideal edge length}
-The idea is to find the "ideal length" of the Delaunay triangulation edges : the "ideal length" of an edge is such that the two edge ends have no overlap.
+The idea is to find the ``ideal length" of the Delaunay triangulation edges : the ``ideal length" of an edge is such that the two edge ends have no overlap.
 
 \bigskip
 In order to do that, we calculate an \emph{overlap factor} $f_{ij}$ for each edge $(i,j)$ ($i,j \in V(G)$) of the Delaunay triangulation of $G$ :
@@ -192,7 +192,7 @@ If $i$ and $j$ do overlap, then that overlap can be removed by expanding the edg
   \label{overlapFactor}
 \end{figure}
 
-Thus, the "ideal length" of an edge of the Delaunay triangulation is $l_{ij} = f_{ij}||p_i^0 - p_j^0||$, where $p_i^0$ is the initial set of coordinates of a node $i$.
+Thus, the ``ideal length" of an edge of the Delaunay triangulation is $l_{ij} = f_{ij}||p_i^0 - p_j^0||$, where $p_i^0$ is the initial set of coordinates of a node $i$.
 
 We now want to find coordinates for the nodes of the initial graph such that the edges length in $DT(G)$ are close to their ideal length.
 
@@ -216,10 +216,10 @@ But there are some situations where keeping $l_{ij}$ is not a good idea (see fig
   \label{badcase}
 \end{figure}
 
-We thus want to avoid removing the "big" overlaps in one iteration only.
+We thus want to avoid removing the ``big" overlaps in one iteration only.
 So we have to replace $f_{ij}$ by $\min(f_{ij},s)$, where $s > 1$ will be a limiting factor. The authors found that $s = 1.5$ worked well.
 
-This type of sum is called a "stress function", in analogy with the well studied \emph{stress model} introduced by Kruskal in \cite{Kruskal64} and applied to graph drawing by Kamada and Kawai in \cite{Kamada89}. 
+This type of sum is called a ``stress function", in analogy with the well studied \emph{stress model} introduced by Kruskal in \cite{Kruskal64} and applied to graph drawing by Kamada and Kawai in \cite{Kamada89}. 
 The above sum is called the \emph{proximity stress model}.
 
 \bigskip
@@ -235,7 +235,7 @@ The process of the first stage makes clear that no overlaps can appear : the dis
 
 But the authors do not explain formally the reason of the termination of this phase : the stress function could always be smaller but never reach a local minimum. Moreover, the number of iterations needed during the first phase is not explicited nor bounded in the article.
 
-The authors' implementation of PRISM contains a threshold : if the gain in the minimization of the stress function is smaller, the first phase of the algorithm ends.
+We can note that the authors' implementation of PRISM contains a threshold : if the gain in the minimization of the stress function is smaller than this threshold, the first phase of the algorithm ends.
 
 %% A preciser et detailler
 
@@ -330,11 +330,11 @@ where $R = \begin{pmatrix} \cos(\rho) & \sin(\rho) \\ -\sin(\rho) & \cos(\rho) \
 
 \section{Complexity}
 
-We will here present the estimated complexity of the PRISM algorithm. This estimation has been made by the authors, which have been presenting in as an "exact" estimation, taking for example the number of iterations in account.
+We will here present the estimated complexity of the PRISM algorithm. This estimation has been made by the authors. They presented it as an ``exact" estimation, taking for example the number of iterations in account.
 
 The computation of the Delaunay triangulation of a given graph can be made in $O(|V| \log |V|)$ time.
 
-The calculation of the overlap factors (see \ref{of}) is made in $O(1)$ time for each factor. Since the Delaunay triangulation is planar and thus has at most $3|V| -6$ edges, this step requires a $O(|v|)$ time in total.
+The calculation of the overlap factors (see \ref{of}) is made in $O(1)$ time for each factor. Since the Delaunay triangulation is planar and thus has at most $3|V| -6$ edges, this step requires a $O(|V|)$ time in total.
 
 The resolution of the proximity stress model can be implemented in various ways, which influences the computational complexity. The authors chose to implement it using a stress majorization technique \cite{Gansner05}, which itself uses a conjugate gradient algorithm. This resolution takes $O(m*k*|V|)$ time, where $m$ is the average number of stress majorization iterations and $k$ is the average number of iterations for the conjugate gradient algorithm. The authors chose to set $m =1$, claiming that the proximity stress model did not need to be accurately solved in each iteration.
 
@@ -354,9 +354,9 @@ Tulip uses particular structures to deal with graph manipulations, and one of th
 
 The PRISM algorithm considers that the label is part of the node, and that the size of the node is determined by the size of the underlying label.
 
-But in Tulip, the labels are seen as a "property" of the graph, and are decorrelated from the nodes themselves. They generally are dynamic sized, and displayed in order to avoid overlaps. We thus do not have access to the size of labels.
+But in Tulip, the labels are seen as a ``property" of the graph, and are decorrelated from the nodes themselves. They generally are dynamic sized, and displayed in order to avoid overlaps. We thus did not have access to the size of labels.
 
-The solution was to increase the size of the nodes and to force the labels inside them (see figure \ref{graphTulip}). Thus, we could considerate that the "labels" were overlapping, even if it was artificially.
+The solution was to increase the size of the nodes and to force the labels inside them (see figure \ref{graphTulip}). Thus, we could considerate that the ``labels" were overlapping, even if it was artificially.
 
 \begin{figure}[h]
   \setlength\fboxsep{5pt}
@@ -384,24 +384,24 @@ This resolution implies the manipulation of weighted Laplacian of matrices and t
 Another possibility was to retrieve some implementation from the GraphViz suite and use it as an external plugin or module. 
 But an analysis of the dependencies of the requested function (the \texttt{StressMajorizationSmoother\_smooth()} function in the \texttt{post\_process.c} file) were to important to do so.
 
-We used a python script to retrieve the number of lines of the dependance files of \texttt{post\_process.c}. The script is given as an annex (mettre ref). We used the \texttt{-MM} option of \texttt{gcc} to generate the headers (.h files) necessary to the execution of the file, then searched for the .c files having the same name and count the number of lines. As a result, 16 of the 52 needed headers have a corresponding .c having the same name, and these 16 files have a total of 14033 lines.
+We used a python script to retrieve the number of lines of the dependance files of \texttt{post\_process.c}. The script is given in Annex A. We used the \texttt{-MM} option of \texttt{gcc} to generate the headers (.h files) necessary to the execution of the file, then searched for the .c files having the same name and count the number of lines. As a result, 16 of the 52 needed headers have a corresponding .c having the same name, and these 16 files have a total of 14033 lines.
 This was considered as a too large amount of code to use as an external plugin or module (and these are only the first level dependancies !).
 
 \bigskip
-We then focused on finding an other resolution method for the proximity stress model and we decided to adapt an algorithm based on a Newton-Raphson method.
+We then focused on finding an other resolution method for the proximity stress model and we decided to adapt an algorithm of Kamada and Kawai based on the Newton-Raphson method.
 
 \subsection{Kamada \& Kawai - Newton-Raphson method}
 
 Kamada and Kawai \cite{Kamada89} proposed an algorithm computing a local minimum of the energy $E$ of a system. We adapted and implemented it by using 
-\[ E = \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2 \]
-The purpose is to calculate new positions $p_i = (x_i, y_i)$ for $i = 1... n$, locally minimizing the global stress function $E$. 
+\[ E = \sum_{(i,j) \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2 \]
+The purpose is to calculate new positions $p_i = (x_i, y_i)$ for $i = 1 \ldots n$, locally minimizing the global stress function $E$. 
 
-We thus want to find $x_i, y_i$ such that $\delta E / \delta x_i = \delta E / \delta y_i = 0$ for $i = 1... n$. That means solving simultaneously $2n$ (non-linear) equations.
+We thus want to find $x_i, y_i$ such that $\delta E / \delta x_i = \delta E / \delta y_i = 0$ for $i = 1 \ldots n$. That means solving simultaneously $2n$ (non-linear) equations.
 
 \bigskip
-The Kamada and Kawai algorithm consists in moving only one node $i$ at a time to reach $\delta E / \delta x_i = \delta E / \delta y_i = 0$, "freezing" the other nodes during the computation.
+The Kamada and Kawai algorithm consists in moving only one node $i$ at a time to reach $\delta E / \delta x_i = \delta E / \delta y_i = 0$, ``freezing" the other nodes during the computation.
 
-We adapted the computation of $\delta E / \delta x_i$ and $\delta E / \delta y_i$ to our configuration : we considered the following values :
+We adapted the computation of $\delta E / \delta x_i$ and $\delta E / \delta y_i$ to our configuration~: we considered the following values :
 
 \begin{eqnarray*}
 \frac{\delta^2 E}{\delta x_i}  & = & \sum_{(i,m) \in E(DT)} w_{im} ( (x_m - x_i) - \frac{l_{im} (x_m - x_i)}{||p_m - p_i||} \\
@@ -410,7 +410,7 @@ We adapted the computation of $\delta E / \delta x_i$ and $\delta E / \delta y_i
  
 where $DT$ is the Delaunay triangulation of the graph, $l_{im}$ is the ideal length of the $(i,m)$ edge, $w_{im} = 1/(l_{im})^2 $ is a weighting factor, and $||p_m - p_i||$ is the euclidian distance between the nodes $m$ and $i$.
 
-At each iteration, the node moved is the one having the largest value of $\Delta_i$ (i.e. the "further" one of the condition to reach):
+At each iteration, the node moved is the one having the largest value of $\Delta_i$ (i.e. the ``further" one of the condition to reach):
 
 \[\Delta_i = \sqrt{\left(\frac{\delta E}{\delta x_i}\right)^2 + \left(\frac{\delta E}{\delta y_i}\right)^2} \]
 
@@ -456,20 +456,20 @@ The algorithm stops when all considered nodes have reached $\Delta_i < \varepsil
 
 \subsubsection{Resolution of the equations}
 
-The resolution of the \ref{eq1} and \ref{eq2} equations has been implemented specifically: the solutions of a system of equations such as 
+The resolution of the \ref{eq1} and \ref{eq2} equations has been implemented specifically~: the solutions of a system of equations such as 
 $\begin{cases}
 Ax + By = E \\
 C x + Dy = F
 \end{cases}$
 are : $x = \frac{ED - BF}{AD - BC}$ and $y = \frac{1}{D} \times(F - \frac{CED - BCF}{AD- BC})$.
 
-This basic implementation aims to decrease the total computational time, as this resolution is done multiple times.
+This basic implementation aims to decrease the total computational time, since this resolution is done multiple times.
 
 \subsubsection{Complexity}
 
-The computation of $l_{ij}$ for each edge $(i,j)$ of the Delaunay triangulation can be done in $O(n)$ time, as the Delaunay triangulation of a graph $G$ is a planar graph and has at most $3n -6$ edges (if $|V(G)| = n$).
+The computation of $l_{ij}$ for each edge $(i,j)$ of the Delaunay triangulation can be done in $O(n)$ time, since the Delaunay triangulation of a graph $G$ is a planar graph and has at most $3n -6$ edges (if $|V(G)| = n$).
 
-The calculation of  $\delta E / \delta x_i$, $\delta E / \delta y_i$ and $Delta_i$ for all nodes $i$ of the graph requires a traversal of all neighbors of $i$ in the Delaunay triangulation. The number of neighbors is bounded by $n$. This calculation can thus done in a $O(n^2)$ time.
+The calculation of  $\delta E / \delta x_i$, $\delta E / \delta y_i$ and $Delta_i$ for all nodes $i$ of the graph requires a traversal of all neighbors of $i$ in the Delaunay triangulation. The number of neighbors is bounded by $n$. This calculation can thus be done in a $O(n^2)$ time.
 
 The pre-computation is thus done in a $O(n^2)$ time.
 
@@ -486,7 +486,7 @@ As we want to find the remaining overlaps, a scan-line algorithm has generally t
 \bigskip
 In Tulip, each bounding box is represented by two points : the lowest and leftest point and the highest and rightest point of the bounding box.
 
-We encompass each node in a BoundingBox so we can use its properties : instead of iterating over all the points of the image, we only use the lowest and the highest points of each BoundingBox. 
+We encompass each node in a BoundingBox so we can use its properties~: instead of iterating over all the points of the image, we only use the lowest and the highest points of each BoundingBox. 
 
 \bigskip
 In a first step, we sort the BoundingBox by their lowest point in the abscissa. Thus, if the BoundingBox $b1$ is placed before the BoundingBox $b2$ in the sorted list, and if the highest point of $b1$ is higher than the lowest point of $b2$, that means that there may be an overlap in the graph between $b1$ and $b2$. 
@@ -556,12 +556,12 @@ The tests have been run on the \texttt{b124} graph, which has 79 nodes and 281 e
 \end{center}
 
 \bigskip
-We see that the lower is the value of $\varepsilon$, the more the number of overlaps removed in the first phase increases. The ratio "final area"/"initial area" is also increasing with the diminution of $\varepsilon$.
+We see that the lower is the value of $\varepsilon$, the more the number of overlaps removed in the first phase increases. The ratio ``final area"/``initial area" is also increasing with the diminution of $\varepsilon$.
 
-Our algorithm on \texttt{b124} with $\varepsilon < 0.00005$ gives final layouts where overlaps are difficult to see, and we consider that a $0.00001$ is a good average value for $\varepsilon$, giving a good visual result and not taking too much time and final area.
+Our algorithm on \texttt{b124} with $\varepsilon < 0.00005$ gives final layouts where overlaps are difficult to see, and we consider that $0.00001$ is a good average value for $\varepsilon$, giving a good visual result and not taking too much time and final area.
 
 \bigskip
-It is important to note that since the first phase does not remove all the overlaps, the overlaps still present along the edges of the Delaunay triangulation will be "double-counted" by the algorithm finding the remaining overlaps via the bounding boxes. 
+It is important to note that since the first phase does not remove all the overlaps, the overlaps still present along the edges of the Delaunay triangulation will be ``double-counted" by the algorithm finding the remaining overlaps via the bounding boxes. 
 
 \begin{figure}[h]
 	\center
@@ -594,9 +594,15 @@ We also wanted to know how the number of overlaps found along the edges of the D
 
 \chapter{Conclusion}
 
-Since PRISM :
+This study was very interesting to teach us how to have a scientific approach. We crossed sum all the steps : exploration of the subject and its position in time, search for the particular cases, termination tests of the algorithm, search for the helpful software (Graphviz), depression before the deadline, and finally implementation and tests. 
 
-ePRISM : PRISM on overlap of edges \cite{Hu09}
+A lot of questions had to be asked and revolved. They can affect the quality of the article (\textit{is this instruction essential ?}), the possibility to do such-and-such equation or the best way to do it.
+
+We learned that a huge work had to be done before the implementation and will help us to do it highly quickly.
+
+Given the results of our implementation, Tulip helped us to decrease the complexity of the algorithm by using an already implemented class. It learned us to pay attention to the documentation of a software to be able to do a high-quality work.
+
+We had a lot of problems to find an implementation corresponding to the algorithm and that discouraged us a little. But now we are proud of our work and we hope that it will help the prospective students implementing this algorithm as a plug-in for Tulip.
 
 \appendix
 \chapter{Python script to find the dependancies of the \texttt{post\_process.c} file in GraphViz}
