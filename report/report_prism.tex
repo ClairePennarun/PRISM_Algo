@@ -3,7 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
 \usepackage{graphicx}
-\usepackage{caption}
+\usepackage[center]{caption}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{hyperref}
@@ -96,9 +96,8 @@ The Satisfy\_VPSC algorithm \cite{VPSC06}, solving the "variable placements with
 	\center
   \setlength\fboxsep{5pt}
   \setlength\fboxrule{0.5pt}
-  \fbox{\includegraphics[width=0.3\textwidth]{figures/vpsc1.png}}
-  \fbox{\includegraphics[width=0.2\textwidth]{figures/vpsc2.png}}
-  \caption{(left) The initial layouts. (right) The results of the Solve\_VPSC algorithm}
+  \fbox{\includegraphics[width=0.6\textwidth]{figures/vpsc.png}}
+  \caption{(left) The initial layout. (right) The result of the Solve\_VPSC algorithm}
   \label{vpsc}
 \end{figure}
 
@@ -354,8 +353,8 @@ The solution was to increase the size of the nodes and to force the labels insid
 \begin{figure}[h]
   \setlength\fboxsep{5pt}
   \setlength\fboxrule{0.5pt}
-  \fbox{\includegraphics[width=0.5\textwidth]{figures/graphTulip0.png}}
-  \fbox{\includegraphics[width=0.5\textwidth]{figures/graphTulipWithLabels0.png}}
+  \fbox{\includegraphics[width=0.46\textwidth]{figures/graphTulip0.png}}
+  \fbox{\includegraphics[width=0.6\textwidth]{figures/graphTulipWithLabels0.png}}
   \caption{Adjustment of the nodes size in Tulip}
   \label{graphTulip}
 \end{figure}
@@ -523,16 +522,45 @@ We can see a lot of overlaps in the green part. The boxes $b'2$ and $b'3$ do ove
 
 Moreover, the boxes $b'1$ and $b'3$ do not overlap in the abscissa, so none of the boxes higher that $b3$ could overlap with $b1$.
 
-\subsection{Complexity}
+\subsubsection{Complexity}
 
 As this algorithm is mainly based on the traversal of the BoundingBox list, its complexity is in $O(n^2)$, where $n$ is the number of nodes in the layout (and thus, the number of bounding boxes in the list). 
 
 \section{Tests and results}
-Tests and time of the Kamada and Kawai solution
+We conducted some tests on our algorithm. 
+
+A first phase was to apprehend the effect of variation of the epsilon paramater in the resolution of the stress model.
+The tests have been run on the \texttt{b124} graph. We variated the value of $\varepsilon$ from 0.0005 to 0.0000001. We also noted the number of overlaps found before and after the two main loops, and the proportion of the area taken by the final layout on the area taken by the initial one.
+
+\bigskip
+\begin{tabular}{|c|c|c|c|c|c|c|}
+	\hline 
+	 $\varepsilon$ & tps(s) & init & 1st & 2nd & end & area \\
+	\hline
+	0.0005 & 7.2 & 102 & 78 & 202 & 169 & 1.7\\
+	0.0001 & 17.7 & 102 & 38  & 134 & 126 & 2.07\\
+	0.00005 & 25.7 & 102 & 24 & 109 & 118 & 2.07\\
+	0.00001 & 38.9 & 102 & 29 & 123 & 100 & 2.08\\
+	0.000005 & 52.9 & 102 & 27 & 111 & 87 & 2.34\\
+	0.000001 & 138 & 102 & 16 & 88 & 74 & 2.22\\
+	\hline
+\end{tabular}
+
+\begin{figure}[h]
+	\center
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.6\textwidth]{figures/b124a.png}}
+  
+  \fbox{\includegraphics[width=0.7\textwidth]{figures/b124b.png}}
+  
+  \fbox{\includegraphics[width=0.7\textwidth]{figures/b124c.png}}
+  
+  \caption{(up) The initial \texttt{b124} graph \\ (middle) after the first phase of our algorithm \\ (down) after the second phase ($\varepsilon = 0.0001$)}
+  \label{b124}
+\end{figure}
 
 graphique nb overlaps ?
-
-images avant -> 1ere phase -> 2e phase
 
 \chapter{Conclusion}
 
