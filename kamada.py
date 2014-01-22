@@ -306,6 +306,10 @@ def adjustNodesLabels(graph):
 	rendering.setLabelScaled(True)
 	rendering.setLabelsDensity(100)
 	per.setRenderingParameters(rendering)
+	
+def computeArea(graph):
+	bb = tlp.computeBoundingBox(graph)
+	return (bb[1][0] - bb[0][0])*(bb[1][1] - bb[0][1])
 
 def main(graph): 
 	externLabel =  graph.getStringProperty("externLabel")
@@ -335,7 +339,6 @@ def main(graph):
 	
 	# Ajustement des tailles des noeuds
 	for n in graph.getNodes():
-#		print n, " ", viewLayout[n]
 		viewShape[n] = tlp.NodeShape.Square
 		viewLabelBorderWidth[n] = 0.0
 	graphCopy = tlp.newGraph()
@@ -345,20 +348,19 @@ def main(graph):
 	graph.setName("initial")
 	graphCopy.setName("initial copy")
 	
-#	# coordonnees de depart
-#	for n in graph.getNodes():
-#		print n, " ", viewLayout[n]
+	initialArea = computeArea(graph)
+	
 	
 	# Algo
 	begin = time.time()
 	p = Prism()
-	p.applyToGraph(graph,0.0001)
+	p.applyToGraph(graph,0.000001)
 	end = time.time()
-
-#	# coordonnees de fin
-#	for n in graph.getNodes():
-#		print n, " ", viewLayout[n]
 	
 	print "temps : ", end-begin
+	finalArea = computeArea(graph)
+	
+	print "diff aire : ", finalArea/initialArea
+	
 
-#	adjustNodesLabels(graph)
+	
