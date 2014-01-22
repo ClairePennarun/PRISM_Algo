@@ -40,7 +40,18 @@
 
 \begin{abstract}
 The problem of removing node overlaps in a given graph layout has been well studied and various algorithms have been designed or adapted to solve it. During this project, we understood and analysed one of them, the PRISM algorithm presented by Gansner and Hu, based on a stress model, which minimize the area taken by the final layout and succeeds in retaining the global shape of the initial one. We also implemented this algorithm to be used in the Tulip framework.
+
+\bigskip
+~\
+\bigskip
+~\
+\bigskip
+\begin{flushright}
+\small
+We would like to thank M. Bruno Pinaud and M. Philippe Narbel for their interest in the project, their kindness and their availability at all time.
+\end{flushright}
 \end{abstract}
+
 
 
 \chapter{Subject presentation and state of the art}
@@ -148,7 +159,6 @@ The \emph{Delaunay triangulation} (DT) (named after the work of Delaunay \cite{D
   \caption{(left) A graph $G$. (right) The Delaunay triangulation of $G$}
   \label{DT}
 \end{figure}
-%% modifier image ?
 
 The Delaunay triangulation of $G$, as a triangulation, is also a planar graph, and has thus at most $3n -6$ edges (if $|V(G)| = n$), which is a very practical parameter for the algorithm.
 
@@ -178,10 +188,9 @@ If $i$ and $j$ do overlap, then that overlap can be removed by expanding the edg
   \setlength\fboxsep{5pt}
   \setlength\fboxrule{0.5pt}
   \fbox{\includegraphics[width=0.5\textwidth]{figures/FacteurChevauchement.png}}
-  \caption{Overlap factor}
+  \caption{The nodes $i$ and $j$ have an overlap (left). The overlap factor is 1.33 (according to the formula). Expending the $(i,j)$ edge by $33 \%$ removes the overlap (right).}
   \label{overlapFactor}
 \end{figure}
-%% modifier image ?
 
 Thus, the "ideal length" of an edge of the Delaunay triangulation is $l_{ij} = f_{ij}||p_i^0 - p_j^0||$, where $p_i^0$ is the initial set of coordinates of a node $i$.
 
@@ -206,7 +215,6 @@ But there are some situations where keeping $l_{ij}$ is not a good idea (see fig
   \caption{(right) A bad case : the big green node causes overlaps. If we attempt to remove it in one iteration only, the optimum solution will be to move the green node outside of the mesh (right), destroying the global shape of the initial layout.}
   \label{badcase}
 \end{figure}
-%% modifier image !
 
 We thus want to avoid removing the "big" overlaps in one iteration only.
 So we have to replace $f_{ij}$ by $\min(f_{ij},s)$, where $s > 1$ will be a limiting factor. The authors found that $s = 1.5$ worked well.
@@ -567,6 +575,19 @@ It is important to note that since the first phase does not remove all the overl
   
   \caption{(up) The initial \texttt{b124} graph \\ (middle) after the first phase of our algorithm \\ (down) after the second phase ($\varepsilon = 0.00005$)}
   \label{b124}
+\end{figure}
+
+\bigskip
+We also wanted to know how the number of overlaps found along the edges of the Delaunay triangulation evolved. We took the now well-known \texttt{b124} graph and displayed the number of overlaps found during the first stage of our algorithm at each iteration (see \ref{overlaps}).
+
+\begin{figure}[h]
+	\center
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.8\textwidth]{figures/overlaps.png}}
+  
+  \caption{The number of overlaps found during the first phase of the algorithm at each iteration - \texttt{b124} graph - $\varepsilon = 0.00005$}
+  \label{overlaps}
 \end{figure}
 
 
