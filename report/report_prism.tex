@@ -172,7 +172,7 @@ The idea is to find the "ideal length" of the Delaunay triangulation edges : the
 In order to do that, we calculate an \emph{overlap factor} $f_{ij}$ for each edge $(i,j)$ ($i,j \in V(G)$) of the Delaunay triangulation of $G$ :
 
 \[ f_{ij} = \max \left( \min \left(\frac{w_i/2 + w_j/2}{x_i - x_j}, 
-\frac{h_i/2 + h_j/2}{y_i - y_j} \right), 1 \right)\]
+\frac{h_i/2 + h_j/2}{y_i - y_j} \right), 1 \right) \label{of}\]
 
 where $(x_i,y_i)$ are the coordinates of vertex $i$, $w_i$ its width and $h_i$ its height.
 
@@ -319,8 +319,18 @@ where $R = \begin{pmatrix} \cos(\rho) & \sin(\rho) \\ -\sin(\rho) & \cos(\rho) \
 
 \section{Complexity}
 
+We will here present the estimated complexity of the PRISM algorithm. This estimation has been made by the authors, which have been presenting in as an "exact" estimation, taking for example the number of iterations in account.
 
-$\rightarrow$ comparaison avec VPSC
+The computation of the Delaunay triangulation of a given graph can be made in $O(|V| \log |V|)$ time.
+
+The calculation of the overlap factors (see \ref{of}) is made in $O(1)$ time for each factor. Since the Delaunay triangulation is planar and thus has at most $3|V| -6$ edges, this step requires a $O(|v|)$ time in total.
+
+The resolution of the proximity stress model can be implemented in various ways, which influences the computational complexity. The authors chose to implement it using a stress majorization technique \cite{Gansner05}, which itself uses a conjugate gradient algorithm. This resolution takes $O(m*k*|V|)$ time, where $m$ is the average number of stress majorization iterations and $k$ is the average number of iterations for the conjugate gradient algorithm. The authors chose to set $m =1$, claiming that the proximity stress model did not need to be accurately solved in each iteration.
+
+The scan-line algorithm can be implemented in $O(l |V| (\log |V| + l))$ time \cite{VPSC06}, where $l$ is the number of still existing overlaps. The authors claim that $l$ is usually a small number and consider that this step is taking time $O(|V| (\log |V|))$. We did not succeed in checking this assumption.
+
+Overall, the PRISM algorithm takes $O(t(|V| \log |V| + k|V|))$ time, where $t$ is the total number of iterations of the two \texttt{while} loops. This number $t$ is quite difficult to bound, since it depends on the technique used to solve the proximity stress model, the number of nodes and their positions. The authors chose not to try to bound it but to keep it in the computational complexity.
+
 \chapter{Implementation within Tulip}
 
 Our goal was to implement the PRISM algorithm within Tulip, as a basis which could be reused and improved later. We had some problems to implement the given algorithm as the authors had done within the GraphViz \cite{Gansner02} software, but we did find solutions.
@@ -369,7 +379,7 @@ This was considered as a too large amount of code to use as an external plugin o
 \bigskip
 We then focused on finding an other resolution method for the proximity stress model and we decided to adapt an algorithm based on a Newton-Raphson method.
 
-\subsection{Newton-Raphson method - Kamada \& Kawai}
+\subsection{Kamada \& Kawai - Newton-Raphson method}
 
 Kamada and Kawai \cite{Kamada89} proposed an algorithm computing a local minimum of the energy $E$ of a system. We adapted and implemented it by using 
 \[ E = \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2 \]
@@ -394,7 +404,7 @@ At each iteration, the node moved is the one having the largest value of $\Delta
 \[\Delta_i = \sqrt{\left(\frac{\delta E}{\delta x_i}\right)^2 + \left(\frac{\delta E}{\delta y_i}\right)^2} \]
 
 \bigskip
-We thus only have to solve a two-equations system at each step (the two unknown values are $\delta x$ and $\delta y$):
+We thus only have to solve a two-equations system at each step, the two unknown values being $\delta x$ and $\delta y$. The system is found by the use of the Newton-Raphson method :
 \begin{eqnarray}
 \label{eq1}
 \frac{\delta^2 E}{\delta x_i^2}(p_i) \times \delta x +  \frac{\delta^2 E}{\delta x_i \delta y_i}(p_i) \times \delta y  & = & - \frac{\delta E}{\delta x_i} (p_i) \\
@@ -435,13 +445,11 @@ The algorithm stops when all considered nodes have reached $\Delta_i < \varepsil
 
 \subsubsection{Resolution of the equations}
 
-The resolution of the \ref{eq1} and \ref{eq2} equations has been implemented very easily : the solutions of a system of equations such as 
-
+The resolution of the \ref{eq1} and \ref{eq2} equations has been implemented specifically: the solutions of a system of equations such as 
 $\begin{cases}
 Ax + By = E \\
 C x + Dy = F
 \end{cases}$
-
 are : $x = \frac{ED - BF}{AD - BC}$ and $y = \frac{1}{D} \times(F - \frac{CED - BCF}{AD- BC})$.
 
 This basic implementation aims to decrease the total computational time, as this resolution is done multiple times.
@@ -460,7 +468,6 @@ The calculation of the \ref{eq1} and \ref{eq2} equations factors is done via a t
 The solutions of these equations is computed in $O(1)$, as the implementation is made expressively for them.
 
 In the end, the time needed to end the two \texttt{while} loops is $O(n) \times T O(n^2)$, where $T$ is the number of iterations of the inner loop. $T$ is quite difficult to bound, since it is dependant of the number of nodes and their initial position.
-
 
 \section{Finding the remaining overlaps}
 As we want to find the remaining overlaps, a scan-line algorithm has generally to consider all the points of the graph layout. But we found a implemented class in Tulip, \texttt{BoundingBox}, which helped us to implement a good non-naive algorithm. 
