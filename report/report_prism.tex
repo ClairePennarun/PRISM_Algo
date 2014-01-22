@@ -111,8 +111,6 @@ Our project consists in understanding the algorithm PRISM proposed by Gansner an
 
 % Bien expliquer pourquoi on veut garder les relations de proximité
 
-% Bien expliquer pourquoi on veut garder les relations de proximité
-
 
 \chapter{PRISM algorithm}
 
@@ -141,8 +139,6 @@ To find easily the overlaps between near nodes of the graph $G$, it will efficie
 A \emph{proximity graph} is a graph in which two vertices are connected by an edge if (and only if) they satisfy a given geometrical property (a survey on proximity graphs can be found in \cite{JT92}).
 
 \bigskip
-
-
 The \emph{Delaunay triangulation} (DT) (named after the work of Delaunay \cite{Delaunay34}) of a graph $G$ is a triangulation of the graph such that none of the circumscribed circles of the triangles in DT(G) contains a vertex on the inside. This particular triangulation also maximises the minimum angle of the triangles found.
 
 \begin{figure}[h]
@@ -158,7 +154,6 @@ The \emph{Delaunay triangulation} (DT) (named after the work of Delaunay \cite{D
 The Delaunay triangulation of $G$, as a triangulation, is also a planar graph, and has thus at most $3n -6$ edges (if $|V(G)| = n$), which is a very practical parameter for the algorithm.
 
 \bigskip
-
 The nearest neighbors of a vertex $v \in V(G)$ tend to form triangles with $v$ and in particular, the closest neighbor of $v$ has an edge with $v$ in DT(G), as the nearest neighbor graph of $G$ is a subgraph of DT(G) (see \cite{JT92}).
 
 In the PRISM algorithm, we consider that the near nodes in $G$ are connected by an edge in the Delaunay triangulation of $G$.
@@ -208,8 +203,8 @@ But there are some situations where keeping $l_{ij}$ is not a good idea (see fig
 	\center
   \setlength\fboxsep{5pt}
   \setlength\fboxrule{0.5pt}
-  \fbox{\includegraphics[width=0.5\textwidth]{figures/graphTulip0.png}}
-  \caption{A bad case}
+  \fbox{\includegraphics[width=0.5\textwidth]{figures/badcase.png}}
+  \caption{(right) A bad case : the big green node causes overlaps. If we attempt to remove it in one iteration only, the optimum solution will be to move the green node outside of the mesh (right), destroying the global shape of the initial layout.}
   \label{badcase}
 \end{figure}
 %% modifier image !
@@ -304,7 +299,16 @@ We first calculate the ratio between the edge lengths of the proximity graphs of
 
 This metric has to be as small as possible to minimize the changes made to the edges length during the algorithm.
 
-The edge length ratio has to be calculated on a rigid graph (as the Delaunay triangulations) to be meaningful : two layouts of the same graph can be completely different if the graph is not rigid.
+The edge length ratio has to be calculated on a rigid graph (as the Delaunay triangulations) to be meaningful : two layouts of the same graph can be completely different if the graph is not rigid (see figure \ref{rigidGraph}).
+
+\begin{figure}[h]
+	\center
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.5\textwidth]{figures/rigidGraph.png}}
+  \caption{Two different graphs having the same edge length ratio. As they are not rigid, the layouts are clearly different.}
+  \label{rigidGraph}
+\end{figure}
 
 \subsubsection{Vertices displacement}
 
