@@ -48,7 +48,7 @@ The problem of removing node overlaps in a given graph layout has been well stud
 \bigskip
 \begin{flushright}
 \small
-We would like to thank M. Bruno Pinaud and M. Philippe Narbel for their interest in the project, their kindness and their availability at all time.
+We would like to thank M. Bruno Pinaud and M. Philippe Narbel for their interest in the project, their kindness and their availability at all times. Ans M. Ryan Herbert for his perfect english.
 \end{flushright}
 \end{abstract}
 
@@ -63,7 +63,7 @@ Graph drawing aims to represent a given information as a graph, generally throug
 
 \bigskip
 %Partie "domaine specifique : node overlap + etat de l'art"
-Most of the layout algorithms consider nodes as points, but some need to let appear additional information as labels. For example, London subway maps would be useless without the indication of the stations on the lines.
+Most of the layout algorithms consider nodes as points, but some need to let additional information appear as labels. For example, London subway maps would be useless without the indication of the stations on the lines.
 
 This could lead to an overlap of some nodes. That must be avoided, as it clearly confuses the understanding of the graph.
 
@@ -81,16 +81,16 @@ The first approach is to try to avoid overlaps while generating the layout.
 The spring-electrical model presented by Eades \cite{Eades84} and Fruchterman and Reingold \cite{FR91} considers the edges as springs between nodes, so that the spring forces move the nodes to a minimal energy state of the global system. A repelling force between non-adjacent nodes is added.
 This model has been adapted by various authors (\cite{HK02}, \cite{Li05}) to take the node size into account, generally as increased repulsive forces.
 
-The stress model of Kamada and Kawai \cite{Kamada89} is based on the assumption that a graph layout is ``good" if the distance between two vertices is close to the theoretical graph distance between these vertices, i.e. to the length of their shortest path. It can also be extended to avoid as much as possible overlap along the edges.
+The stress model of Kamada and Kawai \cite{Kamada89} is based on the assumption that a graph layout is ``good" if the distance between two vertices is close to the theoretical graph distance between these vertices, i.e. to the length of their shortest path. It can also be extended to avoid as much overlap as possible along the edges.
 
-These two models (spring-electrical model and stress model) try to avoid all overlaps, but use generally a post-processing algorithm to ensure the total overlap removal.
+These two models (spring-electrical model and stress model) try to avoid all overlaps, but generally use a post-processing algorithm to ensure the total overlap removal.
 
 More details about the force-directed drawing algorithms can be found in \cite{Kob13}.
 
 \bigskip
 The second possibility is to remove overlaps after the graph is drawn : these are post-processing algorithms.
 
-The Voronoi cluster busting algorithm \cite{Gansner98} restrains the possible displacement of a node with the use of Voronoi cells. This restriction aims to help preserving the relative positions of the nodes. In practice, the algorithm often requires a lot of iterations and the global similarity with the initial layout can be low (see for example the figure \ref{voronoi}).
+The Voronoi cluster busting algorithm \cite{Gansner98} restrains the possible displacement of a node with the use of Voronoi cells. This restriction aims to help preserve the relative positions of the nodes. In practice, the algorithm often requires a lot of iterations and the global similarity with the initial layout can be low (see for example the figure \ref{voronoi}).
 
 \begin{figure}[h]
   \setlength\fboxsep{5pt}
@@ -112,7 +112,7 @@ The Satisfy\_VPSC algorithm \cite{VPSC06}, solving the ``variable placements wit
   \label{vpsc}
 \end{figure}
 
-Some work on word cloud generators like Wordle (\url{http://www.wordle.net/}) allowed to develop new algorithms like Mani-Wordle \cite{Koh10} and RWordle \cite{SSSK12} based on a spiral scheme for the random placement of text labels in order to overcome overlaps.
+Some work on word cloud generators like Wordle (\url{http://www.wordle.net/}) allowed the development of new algorithms like Mani-Wordle \cite{Koh10} and RWordle \cite{SSSK12} based on a spiral scheme for the random placement of text labels in order to overcome overlaps.
 
 
 \bigskip
@@ -144,7 +144,7 @@ The PRISM algorithm runs in two main steps ; in a first step, it removes iterati
 
 \subsubsection{Use of a proximity graph - Delaunay Triangulation}
 
-To find easily the overlaps between near nodes of the graph $G$, it will efficient to work on a proximity graph of $G$. Such a graph will also guarantee the preservation of the proximity relations during the different stages of the algorithm.
+In order to easily find the overlaps between near nodes of the graph $G$, it will efficient to work on a proximity graph of $G$. Such a graph will also guarantee the preservation of the proximity relations during the different stages of the algorithm.
 
 A \emph{proximity graph} is a graph in which two vertices are connected by an edge if (and only if) they satisfy a given geometrical property (a survey on proximity graphs can be found in \cite{JT92}).
 
@@ -233,7 +233,7 @@ This layout may still contain overlaps. We must thus iterate the construction of
 \bigskip
 The process of the first stage makes clear that no overlaps can appear : the distance between nodes can only be increasing and the proximity graph on which we are calculating, as a triangulation, is a rigid graph.
 
-But the authors do not explain formally the reason of the termination of this phase : the stress function could always be smaller but never reach a local minimum. Moreover, the number of iterations needed during the first phase is not explicited nor bounded in the article.
+But the authors do not formally explain the reason of the termination of this phase : the stress function could always be smaller but never reach a local minimum. Moreover, the number of iterations needed during the first phase is not explicited nor bounded in the article.
 
 We can note that the authors' implementation of PRISM contains a threshold : if the gain in the minimization of the stress function is smaller than this threshold, the first phase of the algorithm ends.
 
@@ -249,9 +249,9 @@ To find these still overlapping nodes, we have to use a scan-line algorithm.
 
 A scan-line algorithm is an algorithm which will consider all the points of a layout.
 
-We can not use a algorithm which uses the graph properties because the vertices do not know the positions of others vertices, so we can not find the overlaps by using the vertices properties.
+We can not use an algorithm which uses the graph properties because the vertices do not know the positions of others vertices, so we can not find the overlaps by using the vertices properties.
 
-For all the ordinate's points we consider all the points in the abscissa. If there is an overlap at a point, we add the edge (between the two vertices overlapping) in the Delaunay triangulation. 
+For all the ordinate's points we consider all the points in the axis. If there is an overlap at a point, we add the edge (between the two vertices overlapping) in the Delaunay triangulation. 
 % à etoffer
 
 
@@ -338,23 +338,23 @@ The calculation of the overlap factors (see \ref{of}) is made in $O(1)$ time for
 
 The resolution of the proximity stress model can be implemented in various ways, which influences the computational complexity. The authors chose to implement it using a stress majorization technique \cite{Gansner05}, which itself uses a conjugate gradient algorithm. This resolution takes $O(m*k*|V|)$ time, where $m$ is the average number of stress majorization iterations and $k$ is the average number of iterations for the conjugate gradient algorithm. The authors chose to set $m =1$, claiming that the proximity stress model did not need to be accurately solved in each iteration.
 
-The scan-line algorithm can be implemented in $O(l |V| (\log |V| + l))$ time \cite{VPSC06}, where $l$ is the number of still existing overlaps. The authors claim that $l$ is usually a small number and consider that this step is taking time $O(|V| (\log |V|))$. We did not succeed in checking this assumption.
+The scan-line algorithm can be implemented in $O(l |V| (\log |V| + l))$ time \cite{VPSC06}, where $l$ is the number of still existing overlaps. The authors claim that $l$ is usually a small number and consider that this step take $O(|V| (\log |V|))$ time. We did not succeed in checking this assumption.
 
 Overall, the PRISM algorithm takes $O(t(|V| \log |V| + k|V|))$ time, where $t$ is the total number of iterations of the two \texttt{while} loops. This number $t$ is quite difficult to bound, since it depends on the technique used to solve the proximity stress model, the number of nodes and their positions. The authors chose not to try to bound it but to keep it in the computational complexity.
 
 \chapter{Implementation within Tulip}
 
-Our goal was to implement the PRISM algorithm within Tulip, as a basis which could be reused and improved later. We had some problems to implement the given algorithm as the authors had done within the GraphViz \cite{Gansner02} software, but we did find solutions.
+Our goal was to implement the PRISM algorithm within Tulip, as a basis which could be reused and improved later. We had some problems with implementing the given algorithm as the authors had done within the GraphViz \cite{Gansner02} software, but we did find solutions.
 
 \section{The Tulip framework}
 
 The Tulip framework \cite{Auber12}, developed mainly by the Data Visualization team of the LaBRI (Bordeaux), is a data visualization software dedicated to the analysis and visualization of relational data. It focuses on the manipulation of graphs. Our goal was to implement the PRISM algorithm as a plugin for Tulip, reusing some of the tools already present in the software, such as the calculation of the Delaunay triangulation of a graph.
 
-Tulip uses particular structures to deal with graph manipulations, and one of these structure is very important for the PRISM algorithm : the \texttt{node} structure.
+Tulip uses particular structures to deal with graph manipulations, and one of these structures is very important for the PRISM algorithm : the \texttt{node} structure.
 
 The PRISM algorithm considers that the label is part of the node, and that the size of the node is determined by the size of the underlying label.
 
-But in Tulip, the labels are seen as a ``property" of the graph, and are decorrelated from the nodes themselves. They generally are dynamic sized, and displayed in order to avoid overlaps. We thus did not have access to the size of labels.
+But in Tulip, the labels are seen as a ``property" of the graph, and are decorrelated from the nodes themselves. They generally are dynamically sized, and displayed in order to avoid overlaps. We thus did not have access to the size of labels.
 
 The solution was to increase the size of the nodes and to force the labels inside them (see figure \ref{graphTulip}). Thus, we could considerate that the ``labels" were overlapping, even if it was artificially.
 
@@ -382,7 +382,7 @@ This resolution implies the manipulation of weighted Laplacian of matrices and t
 
 \bigskip
 Another possibility was to retrieve some implementation from the GraphViz suite and use it as an external plugin or module. 
-But an analysis of the dependencies of the requested function (the \texttt{StressMajorizationSmoother\_smooth()} function in the \texttt{post\_process.c} file) were to important to do so.
+But an analysis of the dependencies of the requested function (the \texttt{StressMajorizationSmoother\_smooth()} function in the \texttt{post\_process.c} file) were too important to do so.
 
 We used a python script to retrieve the number of lines of the dependance files of \texttt{post\_process.c}. The script is given in Annex A. We used the \texttt{-MM} option of \texttt{gcc} to generate the headers (.h files) necessary to the execution of the file, then searched for the .c files having the same name and count the number of lines. As a result, 16 of the 52 needed headers have a corresponding .c having the same name, and these 16 files have a total of 14033 lines.
 This was considered as a too large amount of code to use as an external plugin or module (and these are only the first level dependancies !).
@@ -469,7 +469,7 @@ This basic implementation aims to decrease the total computational time, since t
 
 The computation of $l_{ij}$ for each edge $(i,j)$ of the Delaunay triangulation can be done in $O(n)$ time, since the Delaunay triangulation of a graph $G$ is a planar graph and has at most $3n -6$ edges (if $|V(G)| = n$).
 
-The calculation of  $\delta E / \delta x_i$, $\delta E / \delta y_i$ and $Delta_i$ for all nodes $i$ of the graph requires a traversal of all neighbors of $i$ in the Delaunay triangulation. The number of neighbors is bounded by $n$. This calculation can thus be done in a $O(n^2)$ time.
+The calculation of  $\delta E / \delta x_i$, $\delta E / \delta y_i$ and $Delta_i$ for all nodes $i$ of the graph requires an iteration on all neighbors of $i$ in the Delaunay triangulation. The number of neighbors is bounded by $n$. This calculation can thus be done in a $O(n^2)$ time.
 
 The pre-computation is thus done in a $O(n^2)$ time.
 
@@ -484,12 +484,12 @@ In the end, the time needed to end the two \texttt{while} loops is $O(n) \times 
 As we want to find the remaining overlaps, a scan-line algorithm has generally to consider all the points of the graph layout. But we found a implemented class in Tulip, \texttt{BoundingBox}, which helped us to implement a good non-naive algorithm. 
 
 \bigskip
-In Tulip, each bounding box is represented by two points : the lowest and leftest point and the highest and rightest point of the bounding box.
+In Tulip, each bounding box is represented by two points : the lowest and letfmost point and the highest and rightest point of the bounding box.
 
 We encompass each node in a BoundingBox so we can use its properties~: instead of iterating over all the points of the image, we only use the lowest and the highest points of each BoundingBox. 
 
 \bigskip
-In a first step, we sort the BoundingBox by their lowest point in the abscissa. Thus, if the BoundingBox $b1$ is placed before the BoundingBox $b2$ in the sorted list, and if the highest point of $b1$ is higher than the lowest point of $b2$, that means that there may be an overlap in the graph between $b1$ and $b2$. 
+In a first step, we sort the BoundingBox by their lowest point in the axis. Thus, if the BoundingBox $b1$ is placed before the BoundingBox $b2$ in the sorted list, and if the highest point of $b1$ is higher than the lowest point of $b2$, that means that there may be an overlap in the graph between $b1$ and $b2$. 
 
 In the contrary, if the highest point of $b1$ is lower than the lowest point of $b2$, all the BoundingBox sorted after $b1$ can not cause an overlap with $b1$.
 
@@ -524,11 +524,11 @@ Sort the boxes by their lower point
   \label{scanline}
 \end{figure}
 
-In the figure \ref{scanline} we show an exemple of our algorithm \ref{algscanline}. We have colored the graph in red and the list of bounding boxes sorted by abscissa in green. 
+In the figure \ref{scanline} we show an exemple of our algorithm \ref{algscanline}. We have colored the graph in red and the list of bounding boxes sorted by axis in green. 
 
-We can see a lot of overlaps in the green part. The boxes $b'2$ and $b'3$ do overlap in the abscissa and in the graph. But the boxes $b'1$ and $b'2$ overlap in the abscissa and don't overlap in the graph, this is resolved by the line 5 of the algorithm by a check in the graph (we use the method \texttt{BoundingBox.contains(BoundingBox)}).
+We can see a lot of overlaps in the green part. The boxes $b'2$ and $b'3$ do overlap in the axis and in the graph. But the boxes $b'1$ and $b'2$ overlap in the axis and don't overlap in the graph, this is resolved by the line 5 of the algorithm by a check in the graph (we use the method \texttt{BoundingBox.contains(BoundingBox)}).
 
-Moreover, the boxes $b'1$ and $b'3$ do not overlap in the abscissa, so none of the boxes higher that $b3$ could overlap with $b1$.
+Moreover, the boxes $b'1$ and $b'3$ do not overlap in the axis, so none of the boxes higher that $b3$ could overlap with $b1$.
 
 \subsubsection{Complexity}
 
