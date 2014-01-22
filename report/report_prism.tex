@@ -529,13 +529,13 @@ As this algorithm is mainly based on the traversal of the BoundingBox list, its 
 \section{Tests and results}
 We conducted some tests on our algorithm. 
 
-A first phase was to apprehend the effect of variation of the epsilon paramater in the resolution of the stress model.
-The tests have been run on the \texttt{b124} graph. We variated the value of $\varepsilon$ from 0.0005 to 0.0000001. We also noted the number of overlaps found before and after the two main loops, and the proportion of the area taken by the final layout on the area taken by the initial one.
+A first phase was to apprehend the effect of variation of the $\varepsilon$ parameter in the resolution of the stress model.
+The tests have been run on the \texttt{b124} graph, which has 79 nodes and 281 edges. We variated the value of $\varepsilon$ from 0.0005 to 0.0000001. We also noted the number of overlaps found before and after the two main loops, and the proportion of the area taken by the final layout on the area taken by the initial one.
 
-\bigskip
+\begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|}
 	\hline 
-	 $\varepsilon$ & tps(s) & init & 1st & 2nd & end & area \\
+	 $\varepsilon$ & tps(s) & initial & after 1st phase & before 2nd phase & end & area \\
 	\hline
 	0.0005 & 7.2 & 102 & 78 & 202 & 169 & 1.7\\
 	0.0001 & 17.7 & 102 & 38  & 134 & 126 & 2.07\\
@@ -545,6 +545,15 @@ The tests have been run on the \texttt{b124} graph. We variated the value of $\v
 	0.000001 & 138 & 102 & 16 & 88 & 74 & 2.22\\
 	\hline
 \end{tabular}
+\end{center}
+
+\bigskip
+We see that the lower is the value of $\varepsilon$, the more the number of overlaps removed in the first phase increases. The ratio "final area"/"initial area" is also increasing with the diminution of $\varepsilon$.
+
+Our algorithm on \texttt{b124} with $\varepsilon < 0.00005$ gives final layouts where overlaps are difficult to see, and we consider that a $0.00001$ is a good average value for $\varepsilon$, giving a good visual result and not taking too much time and final area.
+
+\bigskip
+It is important to note that since the first phase does not remove all the overlaps, the overlaps still present along the edges of the Delaunay triangulation will be "double-counted" by the algorithm finding the remaining overlaps via the bounding boxes. 
 
 \begin{figure}[h]
 	\center
@@ -560,7 +569,7 @@ The tests have been run on the \texttt{b124} graph. We variated the value of $\v
   \label{b124}
 \end{figure}
 
-graphique nb overlaps ?
+
 
 \chapter{Conclusion}
 
