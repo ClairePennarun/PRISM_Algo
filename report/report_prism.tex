@@ -39,7 +39,7 @@
 
 
 \begin{abstract}
-Abstract..
+The problem of removing node overlaps in a given graph layout has been well studied and various algorithms have been designed or adapted to solve it. During this project, we understood and analysed one of them, the PRISM algorithm presented by Gansner and Hu, based on a stress model, which minimize the area taken by the final layout and succeeds in retaining the global shape of the initial one. We also implemented this algorithm to be used in the Tulip framework.
 \end{abstract}
 
 
@@ -323,6 +323,8 @@ where $R = \begin{pmatrix} \cos(\rho) & \sin(\rho) \\ -\sin(\rho) & \cos(\rho) \
 $\rightarrow$ comparaison avec VPSC
 \chapter{Implementation within Tulip}
 
+Our goal was to implement the PRISM algorithm within Tulip, as a basis which could be reused and improved later. We had some problems to implement the given algorithm as the authors had done within the GraphViz \cite{Gansner02} software, but we did find solutions.
+
 \section{The Tulip framework}
 
 The Tulip framework \cite{Auber12}, developed mainly by the Data Visualization team of the LaBRI (Bordeaux), is a data visualization software dedicated to the analysis and visualization of relational data. It focuses on the manipulation of graphs. Our goal was to implement the PRISM algorithm as a plugin for Tulip, reusing some of the tools already present in the software, such as the calculation of the Delaunay triangulation of a graph.
@@ -431,8 +433,33 @@ The algorithm stops when all considered nodes have reached $\Delta_i < \varepsil
 \label{algkamada}
 \end{figure}
 
+\subsubsection{Resolution of the equations}
+
+The resolution of the \ref{eq1} and \ref{eq2} equations has been implemented very easily : the solutions of a system of equations such as 
+
+$\begin{cases}
+Ax + By = E \\
+C x + Dy = F
+\end{cases}$
+
+are : $x = \frac{ED - BF}{AD - BC}$ and $y = \frac{1}{D} \times(F - \frac{CED - BCF}{AD- BC})$.
+
+This basic implementation aims to decrease the total computational time, as this resolution is done multiple times.
+
 \subsubsection{Complexity}
 
+The computation of $l_{ij}$ for each edge $(i,j)$ of the Delaunay triangulation can be done in $O(n)$ time, as the Delaunay triangulation of a graph $G$ is a planar graph and has at most $3n -6$ edges (if $|V(G)| = n$).
+
+The calculation of  $\delta E / \delta x_i$, $\delta E / \delta y_i$ and $Delta_i$ for all nodes $i$ of the graph requires a traversal of all neighbors of $i$ in the Delaunay triangulation. The number of neighbors is bounded by $n$. This calculation can thus done in a $O(n^2)$ time.
+
+The pre-computation is thus done in a $O(n^2)$ time.
+
+Finding the maximum of $\Delta_i$ requires $O(n)$ time. This could maybe be improved by sorting the $\Delta_i$ structure at its computation. The update of $\Delta_m$ at the end of the loop can be done in $O(1)$ as the preceding value of $p_m = (x_m, y_m)$ is memorized. The outer loop thus requires $O(n)$ time for each iteration.
+
+The calculation of the \ref{eq1} and \ref{eq2} equations factors is done via a traversal of all neighbors of $m$ in the Delaunay triangulation, and thus requires a $O(n^2)$ time.
+The solutions of these equations is computed in $O(1)$, as the implementation is made expressively for them.
+
+In the end, the time needed to end the two \texttt{while} loops is $O(n) \times T O(n^2)$, where $T$ is the number of iterations of the inner loop. $T$ is quite difficult to bound, since it is dependant of the number of nodes and their initial position.
 
 
 \section{Finding the remaining overlaps}
