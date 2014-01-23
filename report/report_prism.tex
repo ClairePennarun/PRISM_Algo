@@ -10,27 +10,32 @@
 
 \begin{document}
 
+\newlength{\plarg}
+\setlength{\plarg}{11cm}
+\newlength{\glarg}
+\setlength{\glarg}{17cm}
+
 \begin{titlepage}
+\thispagestyle{empty}
+\noindent
 \begin{center}
+\begin{minipage}{\plarg}
+\vspace{1cm} \centering
+{\Large\bfseries Project report} \\ \vspace{10mm}
+by \\ \vspace{2mm}
+{\Large\bfseries Claire Pennarun \\ Tatiana Rocher }\\
+Master 2 Algorithmes et Méthodes Formelles \\ \vspace{10mm}
+{\large\bfseries Université de Bordeaux}\\ \vspace{1cm}
+\centerline{\line(1,0){500}} \vskip 0.5cm
+{\huge\bfseries Efficient, Proximity-Preserving Node Overlap Removal\\
+~~ \\
+\large Article by E.R. Gansner and Y. Hu (2009)}\\ \vspace{0,2cm}
+\centerline{\line(1,0){500}} \vskip 1.5cm
+Supervisors \\ \vspace{2mm}
+{\large\bfseries M. Pinaud Bruno \\ M. Narbel Philippe}\\ \vspace{1cm}
+January, $12^{th}$, 2014 \vspace{10mm}
 
-\hfill
-
-\bigskip
-\huge{Université de Bordeaux \par \Large Projet d'Etude et de Recherche} 
-\vfill
-\bigskip 
-\Huge 
-\bigskip Efficient, Proximity-Preserving Node Overlap Removal \par 
-\vfill
-\Large Claire Pennarun \par 
-		Tatiana Rocher
-\vfill
-\Large Article by E.R. Gansner and Y. Hu (2009)	
-		\bigskip 
-\bigskip
-
-\Large
-\today
+\end{minipage}
 \end{center}
 \end{titlepage}
 
@@ -200,7 +205,7 @@ We now want to find coordinates for the nodes of the initial graph such that the
 
 Finding this new set of coordinates means minimizing the following sum :
 
-\[ E = \sum_{i,j \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2\]
+\[ E = \sum_{(i,j) \in E(DT(G))} w_{ij}(||p_i - p_j|| - l_{ij})^2\]
 
 where $l_{ij}$ is the overlap factor and $w_{ij} = 1/(l_{ij})^2$ is a classic weighting factor, used to equalize the contributions to the total sum from the different edges.
 
@@ -236,8 +241,6 @@ The process of the first stage makes clear that no overlaps can appear : the dis
 But the authors do not formally explain the reason of the termination of this phase : the stress function could always be smaller but never reach a local minimum. Moreover, the number of iterations needed during the first phase is not explicited nor bounded in the article.
 
 We can note that the authors' implementation of PRISM contains a threshold : if the gain in the minimization of the stress function is smaller than this threshold, the first phase of the algorithm ends.
-
-%% A preciser et detailler
 
 \subsection{Overlap removal between non-near nodes}
 
@@ -342,6 +345,12 @@ The scan-line algorithm can be implemented in $O(l |V| (\log |V| + l))$ time \ci
 
 Overall, the PRISM algorithm takes $O(t(|V| \log |V| + k|V|))$ time, where $t$ is the total number of iterations of the two \texttt{while} loops. This number $t$ is quite difficult to bound, since it depends on the technique used to solve the proximity stress model, the number of nodes and their positions. The authors chose not to try to bound it but to keep it in the computational complexity.
 
+\section{Results}
+
+The authors mainly compared the results of the PRISM algorithm with the results of the Solve\_VPSC algorithm on 14 graphs provided by the GraphViz suite \cite{Gansner02}. They do note that PRISM gives generally smaller dissimilarities measures and that they are most of the time correlated.
+
+Because of its implementation (it moves the nodes in the vertical and horizontal directions alternately), Solve\_VPSC often creates very tall and thin, or very thick and wide layouts. This is not always detected by the two measures proposed by the authors.
+
 \chapter{Implementation within Tulip}
 
 Our goal was to implement the PRISM algorithm within Tulip, as a basis which could be reused and improved later. We had some problems with implementing the given algorithm as the authors had done within the GraphViz \cite{Gansner02} software, but we did find solutions.
@@ -425,7 +434,7 @@ We thus only have to solve a two-equations system at each step, the two unknown 
 
 The $(\delta x, \delta y)$ found are added to the current position of the node $i$, and this is done iteratively until $\Delta_i < \varepsilon$, where $\varepsilon$ is a threshold determined by the user.
 
-The algorithm stops when all considered nodes have reached $\Delta_i < \varepsilon$. As $\varepsilon \neq 0$, it happens that all nodes have not been removed.
+The algorithm stops when all considered nodes have reached $\Delta_i < \varepsilon$ or if no changes of positions have been made in the preceding iteration. As $\varepsilon \neq 0$, it happens that all nodes have not been removed.
 
 \begin{figure}
 \begin{algorithm}[H]
@@ -461,7 +470,7 @@ $\begin{cases}
 Ax + By = E \\
 C x + Dy = F
 \end{cases}$
-are : $x = \frac{ED - BF}{AD - BC}$ and $y = \frac{1}{D} \times(F - \frac{CED - BCF}{AD- BC})$.
+are~: $x = \frac{ED - BF}{AD - BC}$ and $y = \frac{1}{D} \times(F - \frac{CED - BCF}{AD- BC})$.
 
 This basic implementation aims to decrease the total computational time, since this resolution is done multiple times.
 
@@ -526,7 +535,7 @@ Sort the boxes by their lower point
 
 In the figure \ref{scanline} we show an exemple of our algorithm \ref{algscanline}. We have colored the graph in red and the list of bounding boxes sorted by axis in green. 
 
-We can see a lot of overlaps in the green part. The boxes $b'2$ and $b'3$ do overlap in the axis and in the graph. But the boxes $b'1$ and $b'2$ overlap in the axis and don't overlap in the graph, this is resolved by the line 5 of the algorithm by a check in the graph (we use the method \texttt{BoundingBox.contains(BoundingBox)}).
+We can see a lot of overlaps in the green part. The boxes $b'2$ and $b'3$ do overlap in the axis and in the graph. But the boxes $b'1$ and $b'2$ overlap in the axis and do not overlap in the graph. This is resolved by the line 5 of the algorithm by a check in the graph (we use the method \texttt{BoundingBox.contains(BoundingBox)}).
 
 Moreover, the boxes $b'1$ and $b'3$ do not overlap in the axis, so none of the boxes higher that $b3$ could overlap with $b1$.
 
@@ -578,19 +587,71 @@ It is important to note that since the first phase does not remove all the overl
 \end{figure}
 
 \bigskip
-We also wanted to know how the number of overlaps found along the edges of the Delaunay triangulation evolved. We took the now well-known \texttt{b124} graph and displayed the number of overlaps found during the first stage of our algorithm at each iteration (see \ref{overlaps}).
+As our implementation moves only one node at a time, some overlaps are often created during the first phase, but are generally removed at the next iteration.
+
+We thus wanted to know how the number of overlaps found along the edges of the Delaunay triangulation evolved. We took the now well-known \texttt{b124} graph and displayed the number of overlaps found during the first stage of our algorithm at each iteration (see \ref{overlapsb124_1}). The number of overlaps found decreases quite quickly and then becomes steady.  
+
 
 \begin{figure}[h]
 	\center
   \setlength\fboxsep{5pt}
   \setlength\fboxrule{0.5pt}
-  \fbox{\includegraphics[width=0.8\textwidth]{figures/overlaps.png}}
+  \fbox{\includegraphics[width=0.8\textwidth]{figures/overlapsb124.png}}
   
   \caption{The number of overlaps found during the first phase of the algorithm at each iteration - \texttt{b124} graph - $\varepsilon = 0.00005$}
-  \label{overlaps}
+  \label{overlapsb124_1}
 \end{figure}
 
+The same convergence of the first phase can be seen if we change the value of $\varepsilon$ (see figure \ref{overlapsb124_2})
 
+\begin{figure}[h]
+	\center
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.8\textwidth]{figures/overlapsb124_2.png}}
+  
+  \caption{The number of overlaps found during the first phase of the algorithm at each iteration - \texttt{b124} graph - $\varepsilon = 0.000001$}
+  \label{overlapsb124_2}
+\end{figure}
+
+\bigskip
+But we found also other graphs on which our algorithm is not so efficient. On the \texttt{b102} graph (see figure \ref{b102}), which has 302 nodes and 611 edges, the nodes placement is causing a very large number of overlaps. This means that in order to run the algorithm in a reasonable time, we have to increase the $\varepsilon$ value. This leads to a algorithm creating a layout which is not overlaps-free (see figure \ref{overlapsb102}) nor quickly generated.
+This is a problem which we did not have the time to study in details, but the compromise between efficiency and speed can be (as for the \texttt{b102} graph) quite difficult to found.
+
+\begin{figure}[h]
+	\center
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.7\textwidth]{figures/b102_init.png}}
+  
+  \caption{The \texttt{b102} graph}
+  \label{b102}
+\end{figure}
+
+\begin{figure}[h]
+	\center
+  \setlength\fboxsep{5pt}
+  \setlength\fboxrule{0.5pt}
+  \fbox{\includegraphics[width=0.8\textwidth]{figures/overlapsb102.png}}
+  
+  \caption{The number of overlaps found during the first phase of the algorithm at each iteration - \texttt{b102} graph - $\varepsilon = 0.001$}
+  \label{overlapsb102}
+\end{figure}
+
+\subsubsection{Possible improvements and future work}
+
+Some steps and parameters of our algorithm could clearly be improved.
+
+\bigskip
+The resolution of the stress model could be done an other way, since our implementation is still quite low. It will help applying the algorithm on larger graphs and with a lower value of $\varepsilon$.
+
+An other point is the termination of the \texttt{while} loops, it may be a interesting point to apply the changes in the nodes positions only if the number of overlaps do not increase because of these changes (or if the difference between the numbers is lower than a certain threshold to determine).
+
+\bigskip
+The scan-line algorithm used in the second loop can be improved too. Its implementation is quite efficient but still quite basic, and a "real" scan-line algorithm would be a good improvement.
+
+\bigskip
+The effect of the $\varepsilon$ value and of the initial positions of nodes could be studied in more details, as it clearly influences the result of our algorithm (and sometimes even causes its failure). It may be interesting to ``scale" the given layout before applying the algorithm, in order to avoid having too many overlaps.
 
 \chapter{Conclusion}
 
